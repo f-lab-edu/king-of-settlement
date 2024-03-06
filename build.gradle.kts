@@ -1,5 +1,3 @@
-import org.springframework.boot.gradle.tasks.bundling.BootJar
-
 plugins {
     java
     id("org.springframework.boot") version "3.2.2"
@@ -37,10 +35,11 @@ tasks.withType<Test> {
     useJUnitPlatform()
 }
 
-tasks.getByName<Jar>("jar") {
+tasks.jar {
     enabled = false
 }
 
-tasks.withType<BootJar> {
+tasks.bootJar {
+    enabled = true
     archiveFileName.set("king-of-settlement.jar")
 }
