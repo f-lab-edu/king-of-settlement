@@ -1,4 +1,4 @@
-package son.king_of_settlement;
+package son.kingofsettlement;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
