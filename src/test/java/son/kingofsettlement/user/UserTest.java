@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import son.kingofsettlement.user.exception.entity.User;
+import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.repository.UserRepository;
 
 @SpringBootTest
@@ -22,5 +22,15 @@ class UserTest {
 		User member1 = userRepository.save(user1);
 		// then
 		Assertions.assertEquals(user1, member1);
+	}
+
+	@Test
+	void checkEmailDuplication() throws Exception {
+		// given
+		userRepository.save(new User("myeonghee.son@gmail.com"));
+		// when
+		User user = userRepository.findOneByUserEmail("myeonghee.son@gmail.com");
+		// then
+		Assertions.assertEquals(user.getId(), 1L);
 	}
 }
