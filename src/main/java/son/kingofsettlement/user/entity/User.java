@@ -19,16 +19,16 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	Long id;
-	String userEmail;
-	String password;
-	String sessionId;
-	String userNickname;
-	String userProfileUrl;
-	String userIntroduction;
-	String userActivityStatus;
-	LocalDateTime createdDttm;
-	LocalDateTime updatedDttm;
+	private Long id;
+	private String userEmail;
+	private String password;
+	private String sessionId;
+	private String userNickname;
+	private String userProfileUrl;
+	private String userIntroduction;
+	private String userActivityStatus;
+	private LocalDateTime createdDttm;
+	private LocalDateTime updatedDttm;
 
 	public User() {
 	}
