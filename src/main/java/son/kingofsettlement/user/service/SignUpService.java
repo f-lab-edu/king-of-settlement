@@ -15,7 +15,7 @@ public class SignUpService {
 
 	private final UserRepository userRepository;
 
-	public SignUpResponse join(User user) {
+	public SignUpResponse signUp(User user) {
 
 		if (isDuplicatedUser(user.getUserEmail())) {
 			return new SignUpResponse("회원가입 실패 : 중복된 이메일입니다.");
