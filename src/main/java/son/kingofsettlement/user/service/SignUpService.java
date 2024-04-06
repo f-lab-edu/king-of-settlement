@@ -17,13 +17,10 @@ public class SignUpService {
 
 	public SignUpResponse join(User user) {
 
-		// 2.이메일 중복 여부확인
 		if (isDuplicatedUser(user.getUserEmail())) {
 			return new SignUpResponse("회원가입 실패 : 중복된 이메일입니다.");
 		}
-		// 3.회원생성
 		userRepository.save(user);
-		// 4.가입 승인 메일 발송
 		return new SignUpResponse("회원가입 성공");
 	}
 
