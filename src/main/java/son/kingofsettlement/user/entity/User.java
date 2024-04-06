@@ -33,13 +33,6 @@ public class User {
 	public User() {
 	}
 
-	public User(String userEmail) {
-		this.userEmail = userEmail;
-		this.userActivityStatus = UserStatus.INACTIVE.name();
-		this.createdDttm = LocalDateTime.now();
-		this.updatedDttm = LocalDateTime.now();
-	}
-
 	public User(String userEmail, String password, String userNickname) {
 		this.userEmail = userEmail;
 		this.password = password;
