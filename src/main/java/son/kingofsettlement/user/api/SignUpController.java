@@ -22,6 +22,6 @@ public class SignUpController {
 	 */
 	@PostMapping("/signup")
 	public SignUpResponse post(@RequestBody SignUpRequest req) throws Exception {
-		return signUpService.join(new User(req.email(), req.password(), req.nickname()));
+		return signUpService.signUp(new User(req.email(), req.password(), req.nickname()));
 	}
 }
