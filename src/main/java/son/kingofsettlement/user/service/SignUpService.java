@@ -18,7 +18,7 @@ public class SignUpService {
 	public SignUpResponse join(User user) {
 
 		// 2.이메일 중복 여부확인
-		if (hasDuplicateUser(user.getUserEmail())) {
+		if (isDuplicatedUser(user.getUserEmail())) {
 			return new SignUpResponse("회원가입 실패 : 중복된 이메일입니다.");
 		}
 		// 3.회원생성
@@ -27,7 +27,7 @@ public class SignUpService {
 		return new SignUpResponse("회원가입 성공");
 	}
 
-	public boolean hasDuplicateUser(String email) {
+	public boolean isDuplicatedUser(String email) {
 		return userRepository.findOneByUserEmail(email) != null;
 	}
 
