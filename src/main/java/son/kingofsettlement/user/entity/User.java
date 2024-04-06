@@ -27,8 +27,8 @@ public class User {
 	private String userProfileUrl;
 	private String userIntroduction;
 	private String userActivityStatus;
-	private LocalDateTime createdDttm;
-	private LocalDateTime updatedDttm;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 	public User() {
 	}
@@ -38,7 +38,7 @@ public class User {
 		this.password = password;
 		this.userNickname = userNickname;
 		this.userActivityStatus = UserStatus.INACTIVE.name();
-		this.createdDttm = LocalDateTime.now();
-		this.updatedDttm = LocalDateTime.now();
+		this.createdAt = LocalDateTime.now();
+		this.updatedAt = LocalDateTime.now();
 	}
 }
