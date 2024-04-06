@@ -20,7 +20,7 @@ class SignUpTest {
 		//given
 		User user = new User("melody@gmail.com", "asdf", "melody");
 		//when
-		SignUpResponse response = signUpService.join(user);
+		SignUpResponse response = signUpService.signUp(user);
 		//then
 		Assertions.assertEquals("회원가입 성공", response.message());
 	}
@@ -30,9 +30,9 @@ class SignUpTest {
 		//given
 		User user1 = new User("melody@gmail.com", "asdf", "melody1");
 		User user2 = new User("melody@gmail.com", "123", "melody2");
-		signUpService.join(user1);
+		signUpService.signUp(user1);
 		//when
-		SignUpResponse response = signUpService.join(user2);
+		SignUpResponse response = signUpService.signUp(user2);
 		//then
 		Assertions.assertEquals("회원가입 실패 : 중복된 이메일입니다.", response.message());
 	}
