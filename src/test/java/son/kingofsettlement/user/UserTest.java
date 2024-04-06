@@ -17,7 +17,7 @@ class UserTest {
 	@Test
 	void save() {
 		// given
-		User user1 = new User("myeonghee.son@gmail.com");
+		User user1 = new User("myeonghee.son@gmail.com", "pass", "user1");
 		// when
 		User member1 = userRepository.save(user1);
 		// then
@@ -27,7 +27,7 @@ class UserTest {
 	@Test
 	void checkEmailDuplication() throws Exception {
 		// given
-		userRepository.save(new User("myeonghee.son@gmail.com"));
+		userRepository.save(new User("myeonghee.son@gmail.com", "pass", "user1"));
 		// when
 		User user = userRepository.findOneByUserEmail("myeonghee.son@gmail.com");
 		// then
