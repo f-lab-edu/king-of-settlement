@@ -17,7 +17,7 @@ public class SignUpService {
 
 	public SignUpResponse signUp(User user) {
 
-		if (isDuplicatedUser(user.getUserEmail())) {
+		if (isDuplicatedUser(user.getEmail())) {
 			return new SignUpResponse("회원가입 실패 : 중복된 이메일입니다.");
 		}
 		userRepository.save(user);
@@ -25,7 +25,7 @@ public class SignUpService {
 	}
 
 	public boolean isDuplicatedUser(String email) {
-		return userRepository.findOneByUserEmail(email) != null;
+		return userRepository.findOneByEmail(email) != null;
 	}
 
 }
