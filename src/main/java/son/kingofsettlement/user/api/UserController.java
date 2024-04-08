@@ -12,15 +12,15 @@ import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.service.SignUpService;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/users")
 @RequiredArgsConstructor
-public class SignUpController {
+public class UserController {
 	private final SignUpService signUpService;
 
 	/*
 		회원가입
 	 */
-	@PostMapping("/signup")
+	@PostMapping("")
 	public SignUpResponse post(@RequestBody SignUpRequest req) throws Exception {
 		return signUpService.signUp(new User(req.email(), req.password(), req.nickname()));
 	}
