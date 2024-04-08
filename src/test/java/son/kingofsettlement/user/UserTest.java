@@ -29,7 +29,7 @@ class UserTest {
 		// given
 		userRepository.save(new User("myeonghee.son@gmail.com", "pass", "user1"));
 		// when
-		User user = userRepository.findOneByUserEmail("myeonghee.son@gmail.com");
+		User user = userRepository.findOneByEmail("myeonghee.son@gmail.com");
 		// then
 		Assertions.assertEquals(user.getId(), 1L);
 	}
