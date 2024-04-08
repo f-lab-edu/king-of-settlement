@@ -13,7 +13,7 @@ import son.kingofsettlement.user.dto.UserStatus;
 
 @Entity
 @Getter
-@Table(name = "users")
+@Table
 public class User {
 
 	@Id
