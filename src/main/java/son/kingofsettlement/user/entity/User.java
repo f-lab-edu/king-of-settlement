@@ -20,24 +20,24 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
 	private Long id;
-	private String userEmail;
+	private String email;
 	private String password;
 	private String sessionId;
-	private String userNickname;
-	private String userProfileUrl;
-	private String userIntroduction;
-	private String userActivityStatus;
+	private String nickName;
+	private String profileUrl;
+	private String introduction;
+	private UserStatus activityStatus;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 
 	public User() {
 	}
 
-	public User(String userEmail, String password, String userNickname) {
-		this.userEmail = userEmail;
+	public User(String email, String password, String nickName) {
+		this.email = email;
 		this.password = password;
-		this.userNickname = userNickname;
-		this.userActivityStatus = UserStatus.INACTIVE.name();
+		this.nickName = nickName;
+		this.activityStatus = UserStatus.INACTIVE;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
 	}
