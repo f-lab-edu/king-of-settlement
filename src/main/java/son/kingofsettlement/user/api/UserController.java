@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.dto.SignUpResponse;
-import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.service.SignUpService;
 
 @RestController
@@ -22,6 +21,6 @@ public class UserController {
 	 */
 	@PostMapping("")
 	public SignUpResponse post(@RequestBody SignUpRequest req) throws Exception {
-		return signUpService.signUp(new User(req.email(), req.password(), req.nickname()));
+		return signUpService.signUp(req);
 	}
 }
