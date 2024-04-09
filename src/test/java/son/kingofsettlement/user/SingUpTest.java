@@ -123,7 +123,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -137,7 +137,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -151,7 +151,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("패스워드에 공백을 포함할수 없습니다."))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -165,7 +165,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("패스워드에 대문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -179,7 +179,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("패스워드에 소문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -193,7 +193,7 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("패스워드에 숫자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
@@ -207,14 +207,28 @@ class SignUpTest {
 					.contentType(MediaType.APPLICATION_JSON)
 					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.message").value("패스워드에 특수문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
 			.andReturn();
 	}
 
 	@Test
-	public void givenInvalidNickname_whenJoin_thenThrowSinUpException() throws Exception {
+	public void givenNicknameTooShort_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		jsonMap.put("nickname", "닉");
+		//when, then
+		MvcResult mvcResult = mockMvc.perform(
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("닉네임을 확인해주세요"))
+			.andReturn();
+	}
+
+	@Test
+	public void givenNicknameHavingSpecialCharacter_whenJoin_thenThrowSinUpException() throws Exception {
+		//given
+		jsonMap.put("nickname", "닉@");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
 				MockMvcRequestBuilders.post("/users")
