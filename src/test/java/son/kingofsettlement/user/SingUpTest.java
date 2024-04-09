@@ -2,7 +2,11 @@ package son.kingofsettlement.user;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +16,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.repository.UserRepository;
@@ -33,8 +39,20 @@ class SignUpTest {
 	SignUpService signUpService;
 	@Autowired
 	UserRepository userRepository;
+	Map<String, Object> jsonMap;
 	@Autowired
 	private MockMvc mockMvc;
+	@Autowired
+	private ObjectMapper objectMapper;
+
+	// JUnit에서 각각의 테스트 메소드가 실행된 이후 실행될 메소드를 지정
+	@BeforeEach
+	public void createSignUpJson() {
+		jsonMap = new HashMap<>();
+		jsonMap.put("email", "melody1@gmail.com");
+		jsonMap.put("password", "aSs1132d!@#f");
+		jsonMap.put("nickname", "melody1");
+	}
 
 	// JUnit에서 각각의 테스트 메소드가 실행된 이후 실행될 메소드를 지정
 	@AfterEach
@@ -46,14 +64,17 @@ class SignUpTest {
 	@Test
 	public void givenUser_whenUserHavingDifferentEmailJoin_thenSucceed() throws Exception {
 		//given
-		SignUpRequest req1 = new SignUpRequest("melody3@gmail.com", "aRs!@#!@33123df", "melody1");
+		String email1 = "melody1@gmail.com";
+		String email2 = "melody3@gmail.com";
+		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
 		signUpService.signUp(req1);
 		//when
-		String requestBody = "{" + "    \"email\": \"melody1@gmail.com\"," + "    \"password\": \"aSs1132d!@#f\","
-			+ "    \"nickname\": \"melody1\"" + "}";
+		jsonMap.put("email", email2);
 		//then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.message").value("SignUp Succeed"))
 			.andReturn();
@@ -62,15 +83,17 @@ class SignUpTest {
 	@Test
 	public void givenUser_whenUserHavingSameEmailJoin_thenThrowSinUpException() throws Exception {
 		//given
-		SignUpRequest req1 = new SignUpRequest("melody3@gmail.com", "aRs!@#!@33123df", "melody1");
+		String email1 = "melody1@gmail.com";
+		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
 		signUpService.signUp(req1);
 
 		//when
-		String requestBody = "{" + "    \"email\": \"melody3@gmail.com\"," + "    \"password\": \"aSs11345d!@#f\","
-			+ "    \"nickname\": \"melody2\"" + "}";
+		jsonMap.put("email", email1);
 		//then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("중복된 이메일입니다."))
 			.andReturn();
@@ -79,11 +102,12 @@ class SignUpTest {
 	@Test
 	public void givenInvalidEmail_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melodnate.co.kr\"," + "    \"password\": \"14D5w2@3123\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("email", "melody1gmail.com");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("이메일 형식이 잘못되었습니다."))
 			.andReturn();
@@ -92,12 +116,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordLengthLessThanEight_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody =
-			"{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"145\"," + "    \"nickname\": \"닉넴\""
-				+ "}";
+		jsonMap.put("password", "124");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
 			.andReturn();
@@ -106,11 +130,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordLengthMoreThanSixTeen_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"12345678901234567\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "12345sdfsdf45645!!901234567");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
 			.andReturn();
@@ -119,11 +144,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordInvolveSpace_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"1412 31\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "1sdf !!dasdD");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("패스워드에 공백을 포함할수 없습니다."))
 			.andReturn();
@@ -132,11 +158,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordNotInvolveCapitalLetter_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"145w2@3123\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "145w2@3123");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("패스워드에 대문자를 포함해주세요"))
 			.andReturn();
@@ -145,11 +172,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordNotInvolveLowerCaseLetter_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"145W2@3123\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "145W2@3123");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("패스워드에 소문자를 포함해주세요"))
 			.andReturn();
@@ -158,11 +186,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordNotInvolveDigits_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"Melod5@nate.co.kr\"," + "    \"password\": \"sdf!dfWs@@@\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "sdf!dfWs@@@");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("패스워드에 숫자를 포함해주세요"))
 			.andReturn();
@@ -171,11 +200,12 @@ class SignUpTest {
 	@Test
 	public void givenPasswordNotInvolveSpecialCharacter_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"5Melod@nate.co.kr\"," + "    \"password\": \"sdfdf45645Ws\","
-			+ "    \"nickname\": \"닉넴\"" + "}";
+		jsonMap.put("password", "sdfdf45645Ws");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("패스워드에 특수문자를 포함해주세요"))
 			.andReturn();
@@ -184,11 +214,12 @@ class SignUpTest {
 	@Test
 	public void givenInvalidNickname_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"kind@nate.co.kr\"," + "    \"password\": \"s34d!!GG645Ws\","
-			+ "    \"nickname\": \"닉\"" + "}";
+		jsonMap.put("nickname", "닉");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isBadRequest())
 			.andExpect(jsonPath("$.message").value("닉네임을 확인해주세요"))
 			.andReturn();
@@ -197,11 +228,12 @@ class SignUpTest {
 	@Test
 	public void givenValidNickname_whenJoinSuccess() throws Exception {
 		//given
-		String requestBody = "{" + "    \"email\": \"kind@nate.co.kr\"," + "    \"password\": \"s34d!!GG645Ws\","
-			+ "    \"nickname\": \"123닉\"" + "}";
+		jsonMap.put("nickname", "123닉");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-				MockMvcRequestBuilders.post("/users").contentType(MediaType.APPLICATION_JSON).content(requestBody))
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.message").value("SignUp Succeed"))
 			.andReturn();
