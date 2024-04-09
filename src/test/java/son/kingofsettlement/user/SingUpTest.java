@@ -2,7 +2,8 @@ package son.kingofsettlement.user;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,47 +14,71 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import son.kingofsettlement.user.dto.SignUpRequest;
-import son.kingofsettlement.user.entity.User;
-import son.kingofsettlement.user.exception.SignUpException;
+import son.kingofsettlement.user.repository.UserRepository;
 import son.kingofsettlement.user.service.SignUpService;
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@DisplayName("회원가입")
 class SignUpTest {
 
 	@Autowired
 	SignUpService signUpService;
 
 	@Autowired
+	UserRepository userRepository;
+
+	@Autowired
 	private MockMvc mockMvc;
 
-	@Test
-	public void successJoin() throws Exception {
-		//given
-		SignUpRequest req1 = new SignUpRequest("melody1@gmail.com", "aSs1132d!@#f", "melody1");
-		signUpService.signUp(req1);
-		//when
-		SignUpRequest req2 = new SignUpRequest("melody2@gmail.com", "QWe12132@@r", "melody2");
-		User user = signUpService.signUp(req2);
-		//then
-		Assertions.assertEquals("melody2", user.getNickname());
+	@AfterEach
+	public void tearDown() {
+		userRepository.deleteAll();
 	}
 
 	@Test
-	public void failJoin() throws Exception {
+	public void givenUser_whenUserHavingDifferentEmailJoin_then() throws Exception {
 		//given
 		SignUpRequest req1 = new SignUpRequest("melody3@gmail.com", "aRs!@#!@33123df", "melody1");
 		signUpService.signUp(req1);
 		//when
-		SignUpRequest req2 = new SignUpRequest("melody3@gmail.com", "QWe!@#345r", "melody2");
+		String requestBody = "{"
+			+ "    \"email\": \"melody1@gmail.com\","
+			+ "    \"password\": \"aSs1132d!@#f\","
+			+ "    \"nickname\": \"melody1\""
+			+ "}";
 		//then
-		SignUpException e = Assertions.assertThrows(SignUpException.class,
-			() -> signUpService.signUp(req2));
-		Assertions.assertEquals("중복된 이메일입니다.", e.getMessage());
+		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestBody))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.message").value("SignUp Succeed"))
+			.andReturn();
 	}
 
 	@Test
-	public void givenInvalidEmailWhenJoinThrowSinUpException() throws Exception {
+	public void givenUser_whenUserHavingSameEmailJoin_thenThrowSinUpException() throws Exception {
+		//given
+		SignUpRequest req1 = new SignUpRequest("melody3@gmail.com", "aRs!@#!@33123df", "melody1");
+		signUpService.signUp(req1);
+
+		//when
+		String requestBody = "{"
+			+ "    \"email\": \"melody3@gmail.com\","
+			+ "    \"password\": \"aSs11345d!@#f\","
+			+ "    \"nickname\": \"melody2\""
+			+ "}";
+		//then
+		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post("/users")
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(requestBody))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.message").value("중복된 이메일입니다."))
+			.andReturn();
+	}
+
+	@Test
+	public void givenInvalidEmail_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melodnate.co.kr\","
@@ -70,7 +95,7 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordLengthLessThanEightWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordLengthLessThanEight_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -87,7 +112,8 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordLengthMoreThanSixTeenWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordLengthMoreThanSixTeen_whenJoin_thenThrowSinUpException() throws
+		Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -104,7 +130,7 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordInvolveSpaceWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordInvolveSpace_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -121,7 +147,8 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordNotInvolveCapitalLetterWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordNotInvolveCapitalLetter_whenJoin_thenThrowSinUpException() throws
+		Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -138,7 +165,8 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordNotInvolveLowerCaseLetterWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordNotInvolveLowerCaseLetter_whenJoin_thenThrowSinUpException() throws
+		Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -155,7 +183,7 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordNotInvolveDigitsWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordNotInvolveDigits_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"Melod5@nate.co.kr\","
@@ -172,7 +200,8 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenPasswordNotInvolveSpecialCharacterWhenJoinThrowSinUpException() throws Exception {
+	public void givenPasswordNotInvolveSpecialCharacter_whenJoin_thenThrowSinUpException() throws
+		Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"5Melod@nate.co.kr\","
@@ -189,7 +218,7 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenInvalidNicknameWhenJoinThrowSinUpException() throws Exception {
+	public void givenInvalidNickname_whenJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"kind@nate.co.kr\","
@@ -206,7 +235,7 @@ class SignUpTest {
 	}
 
 	@Test
-	public void givenValidNicknameWhenJoinSuccess() throws Exception {
+	public void givenValidNickname_whenJoinSuccess() throws Exception {
 		//given
 		String requestBody = "{"
 			+ "    \"email\": \"kind@nate.co.kr\","
