@@ -15,5 +15,6 @@ spring:
         default_batch_fetch_size: 100 # 루프의 단위설정 : 100개 마다 루프를 돔 / max는 1000/ 데이터 전송량과 쿼리갯수사이에는 trade off 가 있다.
 
 logging.level:
+  org.springframework.web: debug
   org.hibernate.SQL: debug
 #  org.hibernate.type: trace
