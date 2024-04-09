@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import son.kingofsettlement.user.dto.SignUpRequest;
-import son.kingofsettlement.user.dto.SignUpResponse;
+import son.kingofsettlement.user.entity.User;
+import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.service.SignUpService;
 
 @SpringBootTest
@@ -22,9 +23,9 @@ class SignUpTest {
 		signUpService.signUp(req1);
 		//when
 		SignUpRequest req2 = new SignUpRequest("melody2@gmail.com", "QWe12132@@r", "melody2");
-		SignUpResponse response = signUpService.signUp(req2);
+		User user = signUpService.signUp(req2);
 		//then
-		Assertions.assertEquals("회원가입 성공", response.message());
+		Assertions.assertEquals("melody2", user.getNickName());
 	}
 
 	@Test
@@ -34,9 +35,10 @@ class SignUpTest {
 		signUpService.signUp(req1);
 		//when
 		SignUpRequest req2 = new SignUpRequest("melody3@gmail.com", "QWe!@#345r", "melody2");
-		SignUpResponse response = signUpService.signUp(req2);
 		//then
-		Assertions.assertEquals("회원가입 실패 : 중복된 이메일입니다.", response.message());
+		SignUpException e = Assertions.assertThrows(SignUpException.class,
+			() -> signUpService.signUp(req2));
+		Assertions.assertEquals("중복된 이메일입니다.", e.getMessage());
 	}
 
 }
