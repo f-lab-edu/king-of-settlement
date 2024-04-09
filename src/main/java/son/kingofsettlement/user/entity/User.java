@@ -23,7 +23,7 @@ public class User {
 	private String email;
 	private String password;
 	private String sessionId;
-	private String nickName;
+	private String nickname;
 	private String profileUrl;
 	private String introduction;
 	private UserStatus activityStatus;
@@ -33,10 +33,10 @@ public class User {
 	public User() {
 	}
 
-	public User(String email, String password, String nickName) {
+	public User(String email, String password, String nickname) {
 		this.email = email;
 		this.password = password;
-		this.nickName = nickName;
+		this.nickname = nickname;
 		this.activityStatus = UserStatus.INACTIVE;
 		this.createdAt = LocalDateTime.now();
 		this.updatedAt = LocalDateTime.now();
