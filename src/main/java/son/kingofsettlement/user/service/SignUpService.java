@@ -17,7 +17,7 @@ public class SignUpService {
 	private final UserRepository userRepository;
 
 	public User signUp(SignUpRequest req) throws SignUpException {
-		User user = new User(req.email(), req.password(), req.nickname());
+		User user = new User(req.getEmail(), req.getPassword(), req.getNickname());
 		if (isDuplicatedUser(user.getEmail())) {
 			throw new SignUpException("중복된 이메일입니다.");
 		}
