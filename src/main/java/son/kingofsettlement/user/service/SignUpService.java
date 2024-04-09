@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
+import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.dto.SignUpResponse;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.repository.UserRepository;
@@ -15,8 +16,8 @@ public class SignUpService {
 
 	private final UserRepository userRepository;
 
-	public SignUpResponse signUp(User user) {
-
+	public SignUpResponse signUp(SignUpRequest req) {
+		User user = new User(req.email(), req.password(), req.nickname());
 		if (isDuplicatedUser(user.getEmail())) {
 			return new SignUpResponse("회원가입 실패 : 중복된 이메일입니다.");
 		}
