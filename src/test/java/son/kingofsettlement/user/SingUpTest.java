@@ -65,7 +65,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 이메일 형식이 잘못되었습니다."))
+			.andExpect(jsonPath("$.message").value("이메일 형식이 잘못되었습니다."))
 			.andReturn();
 	}
 
@@ -82,7 +82,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 8자 이상 16자 이하의 비밀번호를 입력해주세요"))
+			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
 			.andReturn();
 	}
 
@@ -99,7 +99,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 8자 이상 16자 이하의 비밀번호를 입력해주세요"))
+			.andExpect(jsonPath("$.message").value("8자 이상 16자 이하의 비밀번호를 입력해주세요"))
 			.andReturn();
 	}
 
@@ -116,7 +116,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 패스워드에 공백을 포함할수 없습니다."))
+			.andExpect(jsonPath("$.message").value("패스워드에 공백을 포함할수 없습니다."))
 			.andReturn();
 	}
 
@@ -133,7 +133,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 패스워드에 대문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("패스워드에 대문자를 포함해주세요"))
 			.andReturn();
 	}
 
@@ -150,7 +150,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 패스워드에 소문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("패스워드에 소문자를 포함해주세요"))
 			.andReturn();
 	}
 
@@ -167,7 +167,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 패스워드에 숫자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("패스워드에 숫자를 포함해주세요"))
 			.andReturn();
 	}
 
@@ -184,7 +184,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 패스워드에 특수문자를 포함해주세요"))
+			.andExpect(jsonPath("$.message").value("패스워드에 특수문자를 포함해주세요"))
 			.andReturn();
 	}
 
@@ -201,7 +201,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isBadRequest())
-			.andExpect(content().string("회원가입 실패 : 닉네임을 확인해주세요"))
+			.andExpect(jsonPath("$.message").value("닉네임을 확인해주세요"))
 			.andReturn();
 	}
 
@@ -218,7 +218,7 @@ class SignUpTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(requestBody))
 			.andExpect(status().isCreated())
-			.andExpect(content().string("회원가입 성공!"))
+			.andExpect(jsonPath("$.message").value("SignUp Succeed"))
 			.andReturn();
 	}
 }
