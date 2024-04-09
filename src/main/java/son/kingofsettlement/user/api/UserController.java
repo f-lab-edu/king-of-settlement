@@ -14,6 +14,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.ValidationException;
 import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.SignUpRequest;
+import son.kingofsettlement.user.dto.SignUpResponse;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.service.SignUpService;
 
@@ -27,7 +28,7 @@ public class UserController {
 		회원가입
 	 */
 	@PostMapping("")
-	public ResponseEntity<String> post(@RequestBody @Valid SignUpRequest req, BindingResult bindingResult) {
+	public ResponseEntity<SignUpResponse> post(@RequestBody @Valid SignUpRequest req, BindingResult bindingResult) {
 		try {
 			if (bindingResult.hasErrors()) {
 				throw new SignUpException(bindingResult.getFieldError().getDefaultMessage());
@@ -36,8 +37,8 @@ public class UserController {
 			validateNickname(req.getNickname());
 			signUpService.signUp(req);
 		} catch (ValidationException | SignUpException e) {
-			return ResponseEntity.badRequest().body("회원가입 실패 : " + e.getMessage());
+			return ResponseEntity.badRequest().body(new SignUpResponse(e.getMessage()));
 		}
-		return ResponseEntity.status(HttpStatus.CREATED).body("회원가입 성공!");
+		return ResponseEntity.status(HttpStatus.CREATED).body(new SignUpResponse("SignUp Succeed"));
 	}
 }
