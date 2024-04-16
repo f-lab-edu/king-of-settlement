@@ -14,11 +14,11 @@ import son.kingofsettlement.user.repository.UserRepository;
 // Lombok 라이브러리에서 제공하는 어노테이션으로, final 필드가 있는 생성자를 생성해주는 역할
 @RequiredArgsConstructor
 // 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
-@Transactional(readOnly = true)
 public class SignUpService {
 
 	private final UserRepository userRepository;
 
+	@Transactional
 	public User signUp(SignUpRequest req) throws SignUpException {
 		User user = new User(req.getEmail(), req.getPassword(), req.getNickname());
 		if (isDuplicatedUser(user.getEmail())) {
@@ -27,6 +27,7 @@ public class SignUpService {
 		return userRepository.save(user);
 	}
 
+	@Transactional(readOnly = true)
 	public boolean isDuplicatedUser(String email) {
 		return userRepository.findOneByEmail(email) != null;
 	}
