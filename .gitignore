@@ -1,6 +1,8 @@
 HELP.md
 .gradle
 build/
+volumes_mysql
+my.secrets
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
 !**/src/test/**/build/

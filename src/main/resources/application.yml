@@ -1,20 +1,4 @@
 spring:
-  datasource:
-    url: jdbc:h2:tcp://localhost/~/kingofsettlement
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
-
-  jpa:
-    hibernate:
-      ddl-auto: create # 실행시마다 테이블 자동 생성
-    properties:
-      hibernate:
-        globally_quoted_identifiers: true # SQL 문이 실행될 때, "" 로 테이블과 컬럼을 자동으로 감싸준다.
-        format_sql: true # 로그의 쿼리 포매팅
-        default_batch_fetch_size: 100 # 루프의 단위설정 : 100개 마다 루프를 돔 / max는 1000/ 데이터 전송량과 쿼리갯수사이에는 trade off 가 있다.
-
-logging.level:
-  org.springframework.web: debug
-  org.hibernate.SQL: debug
-#  org.hibernate.type: trace
+  profiles:
+    default: test
+    active: test

@@ -1,0 +1,68 @@
+name: King Of Settlement CI CD
+
+on:
+  push:
+  pull_request:
+    branches: "main"
+    types: [ opened, synchronize, reopened, closed ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout Source Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      #      - name: Setup Mysql
+      #        uses: mirromutth/mysql-action@v1.1
+      #        with:
+      #          host port: 3308
+      #          character set server: "utf8mb4"
+      #          collation server: "utf8mb4_unicode_520_ci"
+      #          mysql version: "8.3.0"
+      #          mysql database: ${{ secrets.DATABASE_NAME }}
+      #          mysql user: ${{ secrets.DATABASE_USER }}
+      #          mysql password: ${{ secrets.DATABASE_PASSWORD }}
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: 8.6
+
+      - name: Build with Gradle Wrapper
+        run: ./gradlew clean build -Dspring.profiles.active=test --no-daemon
+
+      - name: Build & push Docker image
+        uses: mr-smithers-excellent/docker-build-push@v6
+        with:
+          image: ${{ secrets.DOCKER_IMAGE }}
+          tags: latest
+          registry: docker.io
+          dockerfile: test.Dockerfile
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+
+#  deploy:
+#    runs-on: self-hosted
+#    needs: build
+#
+#    steps:
+#      - name: Checkout Source Code
+#        run:
+
+env:
+  MYSQL_DB_NAME: ${{ secrets.DATABASE_NAME }}
+  MYSQL_USER: ${{ secrets.DATABASE_USER }}
+  MYSQL_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+  HOST_NAME: $HOSTNAME

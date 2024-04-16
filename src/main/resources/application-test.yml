@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:mysql://host.docker.internal:3308/king_of_settlement?characterEncoding=UTF-8&useUnicode=true&createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER}
+    password: ${MYSQL_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQLDialect
+    database: mysql
+    hibernate:
+      ddl-auto: create # 실행시마다 테이블 자동 생성
+    properties:
+      hibernate:
+        globally_quoted_identifiers: true # SQL 문이 실행될 때, "" 로 테이블과 컬럼을 자동으로 감싸준다.
+        format_sql: true # 로그의 쿼리 포매팅
+        default_batch_fetch_size: 100 # 루프의 단위설정 : 100개 마다 루프를 돔 / max는 1000/ 데이터 전송량과 쿼리갯수사이에는 trade off 가 있다.
+
+logging.level:
+  org.springframework.web: debug
+  org.hibernate.SQL: debug
+#  org.hibernate.type: trace

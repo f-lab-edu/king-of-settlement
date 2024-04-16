@@ -1,0 +1,40 @@
+# docker-compose.yml
+
+version: "3"
+networks:
+  network:
+    driver: bridge
+
+services:
+  spring-web:
+    depends_on:
+      - db
+    container_name: spring-web
+    #    image: melody9653/king-of-settlement:latest # 이미지, 태그
+    ports:
+      - "8000:8080"
+    build:
+      context: .
+      dockerfile: local.Dockerfile
+    restart: always
+    networks:
+      - network
+  db:
+    container_name: mysql
+    image: mysql:8.3.0
+    ports:
+      - "3309:3306"
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: Melody
+      MYSQL_USER: son
+      MYSQL_PASSWORD: King7454!
+      MYSQL_DATABASE: king_of_settlement
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_520_ci
+    volumes:
+      - ./volumes_mysql:/var/lib/mysql --user 1000
+    networks:
+      - network
+
