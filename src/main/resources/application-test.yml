@@ -10,6 +10,7 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    database: mysql
     hibernate:
       ddl-auto: create # 실행시마다 테이블 자동 생성
     properties:
