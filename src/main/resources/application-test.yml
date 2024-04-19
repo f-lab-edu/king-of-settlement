@@ -1,9 +1,6 @@
 spring:
-  profiles:
-    active: test
-
   datasource:
-    url: jdbc:mysql://localhost:3307/${MYSQL_DB_NAME}?serverTimezone=Asia/Seoul&useUnicode=true
+    url: jdbc:mysql://127.0.0.1:3306/king_of_settlement?characterEncoding=UTF-8&useUnicode=true&createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
     username: ${MYSQL_USER}
     password: ${MYSQL_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver

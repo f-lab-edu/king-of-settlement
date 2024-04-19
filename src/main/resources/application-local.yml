@@ -1,18 +1,15 @@
 spring:
-  profiles:
-    active: local
-
   datasource:
-    url: jdbc:mysql://localhost:3306/king_of_settlement?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-    username: root
-    password: Melody
+    url: jdbc:mysql://mysql:3306/king_of_settlement?characterEncoding=UTF-8&useUnicode=true&createDatabaseIfNotExist=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: son
+    password: King7454!
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
-    database-platform: org.hibernate.dialect.MySQL8Dialect
+    database-platform: org.hibernate.dialect.MySQLDialect
     database: mysql
     hibernate:
-      ddl-auto: create # 실행시마다 테이블 자동 생성
+      ddl-auto: update # 실행시마다 테이블 자동 생성
     properties:
       hibernate:
         globally_quoted_identifiers: true # SQL 문이 실행될 때, "" 로 테이블과 컬럼을 자동으로 감싸준다.
