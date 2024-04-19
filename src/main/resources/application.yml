@@ -1,6 +1,4 @@
 spring:
   profiles:
-    default: local
-    active: local
-
-
+    default: test
+    active: test
