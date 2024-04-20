@@ -46,10 +46,10 @@ public class UserService {
 		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
 			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
 		session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
+		session.setMaxInactiveInterval(1800);
 		String id = session.getId();
 
 		if (passwordEncoder.matches(password, existUser.getPassword())) {
-			System.out.println(id);
 			existUser.updateSessionId(id);
 		}
 		return existUser;
