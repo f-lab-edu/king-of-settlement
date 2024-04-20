@@ -21,7 +21,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.repository.UserRepository;
-import son.kingofsettlement.user.service.SignUpService;
+import son.kingofsettlement.user.service.UserService;
 
 // 스프링 부트 애플리케이션의 통합 테스트를 위한 어노테이션으로, 애플리케이션 컨텍스트를 로드하여 테스트하는 데 사용됨
 @SpringBootTest
@@ -36,7 +36,7 @@ class SignUpTest {
 
 	// 스프링에서 의존성 주입을 수행하기 위한 어노테이션으로, 해당 필드나 메소드 파라미터에 자동으로 의존성을 주입
 	@Autowired
-	SignUpService signUpService;
+	UserService userService;
 	@Autowired
 	UserRepository userRepository;
 	Map<String, Object> jsonMap;
@@ -67,7 +67,7 @@ class SignUpTest {
 		String email1 = "melody1@gmail.com";
 		String email2 = "melody3@gmail.com";
 		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
-		signUpService.signUp(req1);
+		userService.signUp(req1);
 		//when
 		jsonMap.put("email", email2);
 		//then
@@ -85,7 +85,7 @@ class SignUpTest {
 		//given
 		String email1 = "melody1@gmail.com";
 		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
-		signUpService.signUp(req1);
+		userService.signUp(req1);
 
 		//when
 		jsonMap.put("email", email1);
