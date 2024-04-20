@@ -1,10 +1,13 @@
 package son.kingofsettlement.user.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
+import son.kingofsettlement.user.exception.EncryptException;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.repository.UserRepository;
 
@@ -13,20 +16,23 @@ import son.kingofsettlement.user.repository.UserRepository;
 // Lombok 라이브러리에서 제공하는 어노테이션으로, final 필드가 있는 생성자를 생성해주는 역할
 @RequiredArgsConstructor
 // 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
-@Transactional(readOnly = true)
-public class SignUpService {
+public class UserService {
 
 	private final UserRepository userRepository;
 
-	public User signUp(SignUpRequest req) throws SignUpException {
-		User user = User.inActiveStatusOf("myeonghee.son@gmail.com", "pass");
-		if (isDuplicatedUser(user.getEmail())) {
-			throw new SignUpException("중복된 이메일입니다.");
-		}
+	@Transactional
+	public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
+		isDuplicatedUser(req.getEmail());
+		PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+		String encryptedEmail = AESEncryption.encrypt(req.getEmail());
+		String hashedPassword = passwordEncoder.encode(req.getPassword());
+		User user = User.inActiveStatusOf(encryptedEmail, hashedPassword);
 		return userRepository.save(user);
 	}
 
-	public boolean isDuplicatedUser(String email) {
-		return userRepository.findOneByEmail(email) != null;
+	public void isDuplicatedUser(String email) throws SignUpException {
+		if (userRepository.findOneByEmail(email) != null) {
+			throw new SignUpException("중복된 이메일입니다.");
+		}
 	}
 }
