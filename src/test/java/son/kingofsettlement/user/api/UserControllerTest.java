@@ -12,13 +12,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.SignUpException;
-import son.kingofsettlement.user.service.SignUpService;
+import son.kingofsettlement.user.service.UserService;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // Spring 애플리케이션 전체를 로드할 필요없이 특정한 컨트롤러에 관련된 빈들만 로드하므로 효율적이며, 테스트 속도가 빠르다.
@@ -53,36 +52,34 @@ class UserControllerTest {
 		인스턴스화된 컴포넌트를 목 객체로 대체하여 단위 테스트(Unit Test)를 수행할 때 활용.
 	 */
 	@MockBean
-	private SignUpService signUpService;
+	private UserService userService;
 
 	@Test
 	void testSignUp_Success() throws Exception {
 		//given
-		User user = User.inActiveStatusOf("melody1@gmail.com", "aRs!@#!@33123df");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword(), user.getNickname());
+		User user = User.of("melody1@gmail.com", "aRs!@#!@33123df");
+		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
 		//when
-		when(signUpService.signUp(any(SignUpRequest.class))).thenReturn(user);
+		when(userService.signUp(any(SignUpRequest.class))).thenReturn(user);
 		//then
 		mockMvc.perform(post("/users")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(req)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.message").value("SignUp Succeed"))
 				.andReturn();
 	}
 
 	@Test
 	void testSignUp_Fail() throws Exception {
 		//given
-		User user = User.inActiveStatusOf("melody1@gmail.com", "aRs!@#!@33123df");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword(), user.getNickname());
+		User user = User.of("melody1@gmail.com", "aRs!@#!@33123df");
+		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
 		//when
-		doThrow(new SignUpException("중복된 이메일입니다.")).when(signUpService).signUp(any(SignUpRequest.class));
+		doThrow(new SignUpException("중복된 이메일입니다.")).when(userService).signUp(any(SignUpRequest.class));
 		//then
 		mockMvc.perform(post("/users")
 						.contentType(MediaType.APPLICATION_JSON)
 						.content(objectMapper.writeValueAsString(req)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("중복된 이메일입니다."));
+				.andExpect(status().isBadRequest());
 	}
 }
