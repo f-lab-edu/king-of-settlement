@@ -23,13 +23,9 @@ public class User {
 	@Column(name = "hashed_password")
 	private String password;
 	@Column(name = "session_id")
-	private String session_key;
-	@Column(name = "nickname")
-	private String nickname;
-	@Column(name = "profile_url")
-	private String profileUrl;
-	@Column(name = "introduction")
-	private String introduction;
+	private String sessionId;
+	@Embedded
+	private UserProfile profile;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserStatus activityStatus;
