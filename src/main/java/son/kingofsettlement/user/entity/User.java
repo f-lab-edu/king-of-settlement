@@ -54,4 +54,9 @@ public class User {
 				LocalDateTime.now()
 		);
 	}
+
+	public void updateSessionId(String sessionId) {
+		this.sessionKey = sessionId;
+		this.updatedAt = LocalDateTime.now();
+	}
 }
