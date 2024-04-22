@@ -1,11 +1,16 @@
 package son.kingofsettlement.user.service;
 
+import java.util.List;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.entity.UserFactory;
@@ -23,9 +28,10 @@ public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserFactory userFactory;
+	private final PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
 	public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
-		PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
+
 		String encryptedEmail = AESEncryption.encrypt(req.getEmail());
 		String hashedPassword = passwordEncoder.encode(req.getPassword());
 		isDuplicatedUser(encryptedEmail);
@@ -33,8 +39,25 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
+	public void login(HttpServletRequest request, LogInRequest req) throws UserDoseNotExist {
+		HttpSession session = request.getSession();
+		String password = req.getPassword();
+		String email = req.getEmail();
+
+		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
+			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
+		if (passwordEncoder.encode(password).equals(existUser.getPassword())) {
+			session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
+		}
+	}
+
+	public List<User> getAll() {
+		return userRepository.findAll();
+
+	}
+
 	public void isDuplicatedUser(String encryptedEmail) throws SignUpException {
-		if (userRepository.findOneByEmail(encryptedEmail) != null) {
+		if (userRepository.findOneByEmail(encryptedEmail).isPresent()) {
 			throw new SignUpException("중복된 이메일입니다.");
 		}
 	}

@@ -1,15 +1,20 @@
 package son.kingofsettlement.user.api;
 
+import javax.security.auth.login.LoginException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.dto.SignUpResponse;
 import son.kingofsettlement.user.entity.User;
@@ -48,4 +53,33 @@ public class UserController {
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SignUpResponse("SignUp Succeed!", user.getId()));
 	}
+
+	@PostMapping("/login")
+	public ResponseEntity<String> login(@RequestBody @Valid LogInRequest req, BindingResult bindingResult,
+		final HttpServletRequest request) throws LoginException {
+		try {
+			if (bindingResult.hasFieldErrors()) {
+				throw new LoginException(bindingResult.getFieldError().getDefaultMessage());
+			}
+			userService.login(request, req);
+		} catch (LoginException e) {
+			return ResponseEntity.badRequest().body("로그인에 실패하였습니다.");
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body("LogIn Succeed!");
+	}
+
+	@GetMapping("/users")
+	public ResponseEntity<String> getUserInfo(@RequestBody @Valid LogInRequest req, BindingResult bindingResult,
+		final HttpServletRequest request) throws LoginException {
+		try {
+			if (bindingResult.hasFieldErrors()) {
+				throw new LoginException(bindingResult.getFieldError().getDefaultMessage());
+			}
+			userService.login(request, req);
+		} catch (LoginException e) {
+			return ResponseEntity.badRequest().body("로그인에 실패하였습니다.");
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body("LogIn Succeed!");
+	}
+
 }
