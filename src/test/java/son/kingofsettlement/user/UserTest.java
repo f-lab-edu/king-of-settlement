@@ -1,5 +1,7 @@
 package son.kingofsettlement.user;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -44,8 +46,8 @@ class UserTest {
 		// given
 		User savedUser = userRepository.save(userFactory.createUser("myeonghee.son@gmail.com", "pass"));
 		// when
-		User findeduser = userRepository.findOneByEmail("myeonghee.son@gmail.com");
+		Optional<User> findeduser = userRepository.findOneByEmail("myeonghee.son@gmail.com");
 		// then
-		Assertions.assertEquals(findeduser.getId(), savedUser.getId());
+		Assertions.assertEquals(findeduser.get().getId(), savedUser.getId());
 	}
 }
