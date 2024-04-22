@@ -66,7 +66,7 @@ class SignUpTest {
 		//given
 		String email1 = "melody1@gmail.com";
 		String email2 = "melody3@gmail.com";
-		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
+		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df");
 		userService.signUp(req1);
 		//when
 		jsonMap.put("email", email2);
@@ -84,7 +84,7 @@ class SignUpTest {
 	public void givenUser_whenUserHavingSameEmailJoin_thenThrowSinUpException() throws Exception {
 		//given
 		String email1 = "melody1@gmail.com";
-		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df", "melody1");
+		SignUpRequest req1 = new SignUpRequest(email1, "aRs!@#!@33123df");
 		userService.signUp(req1);
 
 		//when
