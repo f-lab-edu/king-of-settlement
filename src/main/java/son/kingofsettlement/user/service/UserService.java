@@ -25,16 +25,16 @@ public class UserService {
 	private final UserFactory userFactory;
 
 	public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
-		isDuplicatedUser(req.getEmail());
 		PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 		String encryptedEmail = AESEncryption.encrypt(req.getEmail());
 		String hashedPassword = passwordEncoder.encode(req.getPassword());
+		isDuplicatedUser(encryptedEmail);
 		User user = userFactory.createUser(encryptedEmail, hashedPassword);
 		return userRepository.save(user);
 	}
 
-	public void isDuplicatedUser(String email) throws SignUpException {
-		if (userRepository.findOneByEmail(email) != null) {
+	public void isDuplicatedUser(String encryptedEmail) throws SignUpException {
+		if (userRepository.findOneByEmail(encryptedEmail) != null) {
 			throw new SignUpException("중복된 이메일입니다.");
 		}
 	}
