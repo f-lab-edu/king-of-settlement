@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>로그인</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Noto Sans KR', sans-serif;
+        }
+    </style>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+
+        function doSubmit(form) {
+            const email = document.getElementById("email").value;
+            const pass = document.getElementById("password").value;
+            const param = {"email": email, "password": pass};
+
+            $.ajax({
+                url: "/users/login",
+                type: "post",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(param),
+                dataType: "json",
+                success: function (data, status, xhr) {
+                    console.log(data)
+                    alert("로그인에 성공하였습니다.");
+                    window.location.replace("home");
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+    <h1 class="text-2xl font-bold mb-6 text-center">로그인</h1>
+    <form onsubmit="return false;">
+        <div class="mb-4">
+            <input value="myeonghee.son@lsksmo.com" name="email" id="email" type="text" placeholder="이메일"
+                   class="w-full p-4 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        <div class="mb-6">
+            <input value="qwerqWER1234!@#$" name="password" id="password" type="password" placeholder="비밀번호"
+                   class="w-full p-4 border rounded focus:outline-none focus:ring-2 focus:ring-green-500">
+        </div>
+        <input id="submit" type="button" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded"
+                onclick="doSubmit()" value="로그인">
+    </form>
+        <div class="text-center my-6">
+            <a th:href="@{signup}" class="text-gray-500">회원가입</a>
+        </div>
+    <div class="flex justify-around items-center">
+        <div>
+            <a th:href="@{#}" class="flex items-center">
+                <img src="/img/googlelogo.svg" alt="원Google"
+                     class="w-6 h-6 mr-2">
+                구글
+            </a>
+        </div>
+        <div>
+            <a th:href="@{#}" class="flex items-center">
+                <img src="/img/kakaologo.svg"
+                     alt="Kakao" class="w-6 h-6 mr-2">
+                카카오
+            </a>
+        </div>
+        <div>
+            <a th:href="@{#}" class="flex items-center">
+                <img src="/img/naverlogo.svg" alt="Naver"
+                     class="w-6 h-6 mr-2">
+                네이버
+            </a>
+        </div>
+    </div>
+    <div class="text-center mt-6">
+        <a th:href="@{#}" class="text-green-600 hover:underline">비밀번호를 분실하셨나요?</a>
+    </div>
+</div>
+</body>
+<footer class="bg-white fixed bottom-0 left-0 w-full z-10 shadow-md">
+    <nav class="p-4 flex justify-around">
+        <a class="icon-button" href="home">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/home.png" alt="home"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/personal-video-recorder-menu.png" alt="list"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/speech-bubble-with-dots.png" alt="chat"/>
+        </a>
+        <a class="icon-button" href="profile">
+            <img width="50" height="50" src="https://img.icons8.com/ios-glyphs/60/test-account.png" alt="my_page"/>
+        </a>
+    </nav>
+</footer>
+</html>
