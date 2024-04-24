@@ -3,7 +3,6 @@ package son.kingofsettlement.user.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,6 +13,7 @@ import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.entity.UserFactory;
 import son.kingofsettlement.user.exception.EncryptException;
 import son.kingofsettlement.user.exception.SignUpException;
+import son.kingofsettlement.user.exception.UserDoseNotExist;
 import son.kingofsettlement.user.repository.UserRepository;
 
 // 해당 클래스가 비즈니스 로직을 수행하는 서비스 클래스임을 나타내는 어노테이션으로, 주로 서비스 계층의 클래스에 사용
