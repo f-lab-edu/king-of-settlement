@@ -1,15 +1,13 @@
 package son.kingofsettlement.user.service;
 
-import java.util.List;
-
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
@@ -23,13 +21,13 @@ import son.kingofsettlement.user.repository.UserRepository;
 // Lombok 라이브러리에서 제공하는 어노테이션으로, final 필드가 있는 생성자를 생성해주는 역할
 @RequiredArgsConstructor
 // 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
-@Transactional(readOnly = true)
 public class UserService {
 
 	private final UserRepository userRepository;
 	private final UserFactory userFactory;
 	private final PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
+	@Transactional
 	public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
 
 		String encryptedEmail = AESEncryption.encrypt(req.getEmail());
@@ -39,7 +37,8 @@ public class UserService {
 		return userRepository.save(user);
 	}
 
-	public void login(HttpServletRequest request, LogInRequest req) throws UserDoseNotExist {
+	@Transactional
+	public User login(HttpServletRequest request, LogInRequest req) throws UserDoseNotExist {
 		HttpSession session = request.getSession();
 		String password = req.getPassword();
 		String email = req.getEmail();
@@ -48,12 +47,11 @@ public class UserService {
 			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
 		if (passwordEncoder.encode(password).equals(existUser.getPassword())) {
 			session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
+			String id = session.getId();
+			existUser.updateSessionId(id);
+			userRepository.save(existUser);
 		}
-	}
-
-	public List<User> getAll() {
-		return userRepository.findAll();
-
+		return existUser;
 	}
 
 	public void isDuplicatedUser(String encryptedEmail) throws SignUpException {
