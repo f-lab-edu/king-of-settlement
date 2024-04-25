@@ -1,12 +1,13 @@
 package son.kingofsettlement.user.service;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
@@ -42,14 +43,14 @@ public class UserService {
 		HttpSession session = request.getSession();
 		String password = req.getPassword();
 		String email = req.getEmail();
-
 		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
 			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
-		if (passwordEncoder.encode(password).equals(existUser.getPassword())) {
-			session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
-			String id = session.getId();
+		session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
+		String id = session.getId();
+
+		if (passwordEncoder.matches(password, existUser.getPassword())) {
+			System.out.println(id);
 			existUser.updateSessionId(id);
-			userRepository.save(existUser);
 		}
 		return existUser;
 	}
