@@ -1,10 +1,18 @@
 package son.kingofsettlement.user.entity;
 
-import jakarta.persistence.*;
+import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
 import lombok.Getter;
 import son.kingofsettlement.user.dto.UserStatus;
-
-import java.time.LocalDateTime;
+import son.kingofsettlement.user.service.AESEncryption;
 
 // JPA 엔티티 클래스임을 나타내는 어노테이션으로, 데이터베이스의 테이블과 매핑되는 클래스임을 표시
 @Entity
@@ -48,5 +56,14 @@ public class User {
 	public void updateSessionId(String sessionId) {
 		this.sessionId = sessionId;
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	private void decryptEmail() {
+		this.email = AESEncryption.decrypt(email);
+	}
+
+	public String getEmail() {
+		decryptEmail();
+		return email;
 	}
 }
