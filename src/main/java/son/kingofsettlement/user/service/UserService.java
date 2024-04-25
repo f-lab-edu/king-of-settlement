@@ -5,7 +5,9 @@ import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.LogInRequest;
@@ -53,6 +55,14 @@ public class UserService {
 			existUser.updateSessionId(id);
 		}
 		return existUser;
+	}
+
+	@Transactional
+	public void logout(HttpServletRequest request, HttpServletResponse response) throws UserDoseNotExist {
+		Cookie cookie = new Cookie("JSESSIONID", null);
+		cookie.setPath("/");
+		cookie.setMaxAge(0);
+		response.addCookie(cookie);
 	}
 
 	public void isDuplicatedUser(String encryptedEmail) throws SignUpException {
