@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #4b5563;
+        }
+
+        .btn-green {
+            background-color: #10b981;
+            color: white;
+            width: 100%;
+            padding: 0.75rem;
+            border-radius: 10rem; /* 6px */
+            text-align: center;
+            font-weight: 600;
+        }
+
+    </style>
+    <script src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript">
+
+        function doSubmit(form) {
+            const email = document.getElementById("email").value;
+            const pass = document.getElementById("password").value;
+            const param = {"email": email, "password": pass};
+
+            $.ajax({
+                url: "/users",
+                type: "post",
+                accept: "application/json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(param),
+                dataType: "json",
+                success: function (data, status, xhr) {
+                    console.log(data)
+                    alert("회원가입을 성공하였습니다. 이메일 인증 후 로그인 가능합니다.");
+                    window.location.replace("login");
+                }
+            });
+        }
+    </script>
+</head>
+<body class="bg-gray-50 flex items-center justify-center h-screen">
+<div class="bg-white p-8 rounded-lg shadow-lg max-w-sm w-full">
+    <div class="flex justify-between items-center mb-4">
+        <button class="text-green-600">X</button>
+        <a href="login" class="text-green-500">로그인</a>
+    </div>
+    <h1 class="text-2xl font-bold mb-6 text-center">회원가입</h1>
+    <!--    <div class="grid grid-cols-2 gap-4 mb-4">-->
+    <form name="form" onsubmit="return false;">
+        <div class="mb-4">
+            <input value="myeonghee.son@lsksmo.com" name="email" type="email" id="email" placeholder="이메일을 입력하세요" class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full">
+        </div>
+        <div class="mb-4">
+            <input value="qwerqWER1234!@#$" name="password" type="password" id="password" placeholder="비밀번호를 입력하세요"
+                   class="w-full p-3 border rounded focus:outline-none focus:ring-2 focus:ring-green-500 w-full mb-4">
+            <p class="text-sm text-gray-500 mb-2">* 영문 대문자, 소문자, 숫자, 특수문자를 포함한 13자 이상의 비밀번호를 입력하세요.</p>
+        </div>
+        <div class="mb-4">
+            <input type="checkbox" id="terms">
+            <label for="terms" class="text-sm text-gray-600 ml-2">개인정보 수집 및 이용에 동의합니다.</label>
+            <a class="text-sm  text-green-500 mt-2" style="text-decoration : underline;">보기</a>
+        </div>
+        <div class="mb-4">
+            <input type="checkbox" id="updates">
+            <label for="updates" class="text-sm text-gray-600 ml-2">마케팅 정보 수신 및 광고 수신에 동의합니다.</label>
+            <a class="text-sm  text-green-500 mt-2" style="text-decoration : underline;">보기</a>
+        </div>
+        <input id="submit" type="button" onclick="doSubmit()"
+               class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded" value="회원가입">
+    </form>
+</div>
+</body>
+<footer class="bg-white fixed bottom-0 left-0 w-full z-10 shadow-md">
+    <nav class="p-4 flex justify-around">
+        <a class="icon-button" href="home">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/home.png" alt="home"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/personal-video-recorder-menu.png" alt="list"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img width="50" height="50" src="https://img.icons8.com/ios-filled/50/speech-bubble-with-dots.png" alt="chat"/>
+        </a>
+        <a class="icon-button" href="profile">
+            <img width="50" height="50" src="https://img.icons8.com/ios-glyphs/60/test-account.png" alt="my_page"/>
+        </a>
+    </nav>
+</footer>
+</html>
+
+
+
+
+
+

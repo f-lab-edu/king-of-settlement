@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>프로필</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .icon-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+        }
+
+        .profile {
+            flex-direction: column;
+            position: relative;
+        }
+
+        .profile .photo-v1 {
+            position: absolute;
+            right: 90px;
+            bottom: 0px;
+        }
+
+    </style>
+    <script src="http://code.jquery.com/jquery-latest.min.js">
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "get",
+                url: "/login/user",
+                accept: "application/json",
+                success: function (user) {
+                    if (user == null) {
+                        window.location.replace("login");
+                    }
+                    let nickname = ""
+                    let introduction = ""
+                    let profile_url = ""
+                    let profile = user.profile;
+                    if (profile != null) {
+
+                        nickname = profile.nickname == null ? "" : profile.nickname
+                        introduction = profile.introduction == null ? "" : profile.introduction
+                        profile_url = profile.profile_url == null ? "" : profile.profile_url
+                    }
+                    $('#email').val(user.email);
+                    $('#nickname').val(nickname);
+                    $('#introduction').val(introduction);
+                    $('#profile_url').val(profile_url);
+                },
+                error: function (a, b, c) {
+                    window.location.replace("login");
+                }
+            });
+        });
+    </script>
+
+    <!-- Header -->
+    <div class="bg-green-500 text-white p-4" style="height: 60px">
+        <div class="flex items-center justify-between">
+            <button class="icon-button" th:onclick="|location.href='@{/web/home}'|">
+                <img alt="Back" src="https://img.icons8.com/ios-filled/50/ffffff/back.png" width="30">
+            </button>
+            <div>
+                <h1 class="text-lg">프로필</h1>
+            </div>
+            <button class="icon-button">
+                <img alt="Settings" src="https://img.icons8.com/ios-filled/50/ffffff/settings.png" width="30px">
+            </button>
+        </div>
+    </div>
+</head>
+
+<body>
+<div class="max-w-md mx-auto p-5">
+
+    <!-- Profile Image -->
+    <div class="profile flex text-center m-5">
+        <div class="">
+            <input alt="Profile Image" class="profile-image mx-auto" id="profile_url"
+                   src="https://images.unsplash.com/photo-1500917293891-ef795e70e1f6?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=500&q=60"
+                   type="image">
+        </div>
+        <div class="photo-v1">
+            <img alt="stack-of-photos--v1" src="https://img.icons8.com/ios-glyphs/60/stack-of-photos--v1.png"
+                 width="40"/>
+        </div>
+    </div>
+
+    <!-- User Info -->
+    <div class="px-4">
+        <div class="mb-4">
+            <input class="border border-gray-300 rounded-lg p-2 w-full flex-1 mr-2" disabled id="email" name="email"
+                   type="text">
+        </div>
+        <div class="flex items-center justify-between mb-4">
+            <input class="border border-gray-300 rounded-lg p-2 flex-1 mr-2" id="nickname" name="nickname"
+                   placeholder="닉네임을 입력해주세요"
+                   type="text">
+            <button class="icon-button">
+                <img alt="Clear" src="https://img.icons8.com/ios-filled/50/000000/multiply.png">
+            </button>
+        </div>
+        <div class="mb-4">
+            <input class="border border-gray-300 rounded-lg p-2 w-full flex-1 mr-2" id="introduction"
+                   name="introduction" placeholder="본인을 소개해주세요." style="height: 80px;"
+                   type="text">
+        </div>
+        <button class="bg-green-500 text-white w-full py-2 rounded-3xl mb-4">저장</button>
+        <div class="flex mt-10">
+            <button class="bg-white-500 text-black w-full py-2 rounded-lg">회원탈퇴</button>
+            <button class="bg-green-500 text-white w-full py-2 rounded-lg">비밀번호 초기화</button>
+        </div>
+    </div>
+
+</div>
+</body>
+<footer class="bg-white fixed bottom-0 left-0 w-full z-10 shadow-md">
+    <nav class="p-4 flex justify-around">
+        <a class="icon-button" href="home">
+            <img alt="home" height="50" src="https://img.icons8.com/ios-filled/50/home.png" width="50"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img alt="list" height="50" src="https://img.icons8.com/ios-filled/50/personal-video-recorder-menu.png"
+                 width="50"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img alt="chat" height="50" src="https://img.icons8.com/ios-filled/50/speech-bubble-with-dots.png"
+                 width="50"/>
+        </a>
+        <a class="icon-button" href="profile">
+            <img alt="my_page" height="50" src="https://img.icons8.com/ios-glyphs/60/test-account.png" width="50"/>
+        </a>
+    </nav>
+</footer>
+</html>

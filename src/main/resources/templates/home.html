@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <title>King of Settlement</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f9fafb;
+        }
+
+        .scrollable-x {
+            overflow-x: auto;
+            white-space: nowrap;
+            height: 70px;
+            margin-top: 50px;
+        }
+
+        .scrollable-y {
+            overflow-y: auto;
+            height: 600px;
+            align-content: center;
+        }
+
+        .card {
+            display: inline-block;
+            width: 80px;
+            height: 40px;
+            background-color: #f3f4f6;
+            margin: 5px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .item-card {
+            display: inline-block;
+            width: 130px;
+            height: 120px;
+            background-color: #f3f4f6;
+            margin: 10px;
+            border-radius: 8px;
+            align-content: center;
+            padding: 4px;
+        }
+
+        .card-image {
+            display: inline-block;
+            width: 100px;
+            height: 60px;
+            background-color: #f3f4f6;
+            margin: 10px;
+            border-radius: 8px;
+        }
+
+        .card-content {
+            padding: 5px;
+            text-align: center;
+            font-size: small;
+        }
+
+        .floating-button {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            background-color: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+
+    </style>
+
+    <script src="http://code.jquery.com/jquery-latest.min.js">
+
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $.ajax({
+                type: "get",
+                url: "/login/user",
+                accept: "application/json",
+                success: function (user) {
+                    if (user == null) {
+                        window.location.replace("login");
+                    }
+                    $('#login_user').text(user.email);
+                },
+                error: function (a, b, c) {
+                    window.location.replace("login");
+                }
+            });
+        });
+
+        function doLogout(e) {
+            $.ajax({
+                url: "/users/logout",
+                type: "get",
+                accept: "application/json",
+                success: function (data, status, xhr) {
+                    console.log(data)
+                    alert("로그아웃 되었습니다.");
+                    window.location.replace("login");
+                }
+            });
+            e.preventDefault();
+        }
+
+
+    </script>
+</head>
+<body>
+<div class="bg-white fixed top-0 left-0 w-full z-10">
+    <nav class="p-4 flex justify-between items-center">
+        <button class="font-bold" onclick="doLogout()">로그아웃</button>
+        <button class="font-bold">메뉴</button>
+        <button class="font-bold" id="login_user">로그인해주세요</button>
+        <button class="font-bold">알림</button>
+    </nav>
+</div>
+<div class="max-w-md mx-auto p-5">
+    <div class="scrollable-x">
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+        <div class="card"></div>
+    </div>
+    <div class="scrollable-y p-4">
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+        <div class="item-card">
+            <img alt="Placeholder Image" class="card-image" src="https://via.placeholder.com/300x200">
+            <p class="card-content">Card Content</p>
+        </div>
+    </div>
+
+    <button class="floating-button mb-5">+</button>
+</div>
+</body>
+<footer class="bg-white fixed bottom-0 left-0 w-full z-10 shadow-md">
+    <nav class="p-4 flex justify-around">
+        <a class="icon-button" href="home">
+            <img alt="home" height="50" src="https://img.icons8.com/ios-filled/50/home.png" width="50"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img alt="list" height="50" src="https://img.icons8.com/ios-filled/50/personal-video-recorder-menu.png"
+                 width="50"/>
+        </a>
+        <a class="icon-button" href="#">
+            <img alt="chat" height="50" src="https://img.icons8.com/ios-filled/50/speech-bubble-with-dots.png"
+                 width="50"/>
+        </a>
+        <a class="icon-button" href="profile">
+            <img alt="my_page" height="50" src="https://img.icons8.com/ios-glyphs/60/test-account.png" width="50"/>
+        </a>
+    </nav>
+</footer>
+</html>
+
