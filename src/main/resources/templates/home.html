@@ -85,12 +85,14 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $.ajax({
-
                 type: "get",
                 url: "/login/user",
                 accept: "application/json",
-                success: function (result) {
-                    $('#login_user').text(result.email);
+                success: function (user) {
+                    if (user == null) {
+                        window.location.replace("login");
+                    }
+                    $('#login_user').text(user.email);
                 },
                 error: function (a, b, c) {
                     window.location.replace("login");
@@ -109,7 +111,7 @@
                     window.location.replace("login");
                 }
             });
-            // e.preventDefault();
+            e.preventDefault();
         }
 
 
