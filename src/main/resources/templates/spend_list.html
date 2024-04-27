@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>지출내역</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .custom-switch {
+            width: 34px;
+            height: 20px;
+            position: relative;
+            border: 1px solid #ccc;
+            border-radius: 9999px;
+            background-color: #ccc;
+            transition: background-color 0.3s;
+        }
+
+        .custom-switch::after {
+            content: '';
+            position: absolute;
+            top: 1px;
+            left: 1px;
+            width: 18px;
+            height: 18px;
+            border-radius: 9999px;
+            background-color: white;
+            transition: left 0.3s;
+        }
+
+        .custom-switch.active {
+            background-color: #10B981;
+        }
+
+        .custom-switch.active::after {
+            left: 15px;
+        }
+
+        .floating-button {
+            position: fixed;
+            right: 20px;
+            bottom: 80px;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .filter {
+            right: 2px;
+            bottom: 0px;
+            top: 1px;
+            left: 1px;
+        }
+
+        /*.scrollable-y {*/
+        /*    overflow-y: auto;*/
+        /*    height: 600px;*/
+        /*    !*align-content: center;*!*/
+        /*}*/
+        table thead, table tbody tr {
+            display: table;
+            width: 100%;
+        }
+
+        table tbody {
+            display: block;
+            max-height: 600px;
+            overflow-y: scroll;
+        }
+
+        .item-row {
+            display: inline-table;
+            height: 50px;
+            background-color: #f3f4f6;
+            margin: 10px;
+            border-radius: 8px;
+            align-content: center;
+            padding: 4px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+<div class="max-w-md mx-auto bg-white shadow-lg rounded-lg overflow-hidden">
+    <div class="px-4 py-5">
+
+        <div class="flex justify-between items-center mb-4">
+            <button class="text-gray-600 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                     class="h-6 w-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                </svg>
+            </button>
+            <h2 class="text-lg font-semibold text-gray-900">예산</h2>
+            <button class="text-gray-600 focus:outline-none">
+                <img width="25" height="25" src="https://img.icons8.com/ios-glyphs/60/share--v1.png"
+                     alt="share--v1"/>
+            </button>
+        </div>
+        <div class="flex items-center justify-center">
+            <h1 class="text-lg">내수동어부들</h1>
+        </div>
+        <div class="flex items-center justify-end mb-4">
+            <div class="text-sm text-gray-500 mr-2">미송금</div>
+            <div class="custom-switch active" onclick="this.classList.toggle('active')"></div>
+        </div>
+
+        <div class="flex items-center justify-left mb-4 border-b">
+            <div class="text-md text-gray-500 pr-4 pl-4 border-b">전체</div>
+            <div class="text-md text-gray-500 pr-4 pl-4 border-b">일별</div>
+            <div class="text-md text-gray-500 pr-4 pl-4 border-b">주별</div>
+            <div class="text-md text-gray-500 pr-4 pl-4 border-b">월별</div>
+            <div class="text-md text-gray-500 pr-4 pl-4"></div>
+            <div class="text-md text-gray-500 pr-4 pl-4"></div>
+            <div class="text-md text-gray-500 pr-4 pl-4"></div>
+            <div class="text-md text-gray-500 pr-5 pl-5"></div>
+            <div class="flex items-center justify-end">
+                <img width="16" height="16" src="https://img.icons8.com/tiny-glyph/16/filter.png" alt="filter"/>
+            </div>
+        </div>
+        <div class="scrollable-y">
+            <table class="w-full text-sm text-left text-gray-500">
+                <thead class="text-sm text-gray-700 uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-3 py-3">날짜</th>
+                    <th scope="col" class="px-3 py-3">항목</th>
+                    <th scope="col" class="px-3 py-3">금액</th>
+                    <th scope="col" class="px-3 py-3">송금</th>
+                    <th scope="col" class="px-3 py-3">영수증</th>
+                    <th scope="col" class="px-3 py-3">등록자</th>
+                </tr>
+                </thead>
+                <tbody class="">
+                <!-- Repeat for each transaction -->
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <tr class="bg-white border-b">
+                    <td class="text-md px-3 py-4  ">12.17</td>
+                    <td class="text-md px-3 py-4 ">식대</td>
+                    <td class="text-md px-3 py-4 ">5000</td>
+                    <td class="text-md px-3 py-4 ">X</td>
+                    <td class="text-md px-3 py-4 ">
+                        <img width="20" height="20" src="https://img.icons8.com/material-rounded/48/picture.png"
+                             alt="picture"/>
+                    </td>
+                    <td class="px-3 py-4">멜로디</td>
+                </tr>
+                <!-- Add more rows as needed -->
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-4 mb-2">
+            <button class="floating-button bg-gray-800 text-white rounded-full p-4 focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                     class="h-6 w-6">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+</div>
+</body>
+</html>
