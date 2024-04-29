@@ -1,15 +1,16 @@
 package son.kingofsettlement.user.service;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
@@ -24,6 +25,7 @@ import son.kingofsettlement.user.repository.UserRepository;
 // Lombok 라이브러리에서 제공하는 어노테이션으로, final 필드가 있는 생성자를 생성해주는 역할
 @RequiredArgsConstructor
 // 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
+@Slf4j
 public class UserService {
 
 	private final UserRepository userRepository;
@@ -47,10 +49,8 @@ public class UserService {
 		String email = req.getEmail();
 		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
 			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
-		session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
-		session.setMaxInactiveInterval(1800);
+		session.setMaxInactiveInterval(30);
 		String id = session.getId();
-
 		if (passwordEncoder.matches(password, existUser.getPassword())) {
 			existUser.updateSessionId(id);
 		}
@@ -58,11 +58,14 @@ public class UserService {
 	}
 
 	@Transactional
-	public void logout(HttpServletRequest request, HttpServletResponse response) throws UserDoseNotExist {
-		Cookie cookie = new Cookie("JSESSIONID", null);
-		cookie.setPath("/");
-		cookie.setMaxAge(0);
-		response.addCookie(cookie);
+	public void logout(HttpServletRequest request) throws UserDoseNotExist {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+			String sessionId = session.getId();
+			Optional<User> oneBySessionId = userRepository.findOneBySessionId(sessionId);
+			oneBySessionId.ifPresent(user -> user.updateSessionId(""));
+		}
 	}
 
 	public void isDuplicatedUser(String encryptedEmail) throws SignUpException {

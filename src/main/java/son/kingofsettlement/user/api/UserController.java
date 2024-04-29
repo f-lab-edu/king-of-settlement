@@ -72,7 +72,7 @@ public class UserController {
 
 	@GetMapping("/logout")
 	public ResponseEntity<Object> logout(final HttpServletRequest request, final HttpServletResponse response) {
-		userService.logout(request, response);
+		userService.logout(request);
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new SignUpResponse("Logout Succeed!", null));
 	}
 }
