@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.repository.UserRepository;
 
@@ -29,7 +28,7 @@ class UserTest {
 	@Test
 	void givenUser_whenSave_thenInputUserEqualsToOutputUser() {
 		// given
-		User user1 = new User("myeonghee.son@gmail.com", "pass", "user1");
+		User user1 = User.inActiveStatusOf("myeonghee.son@gmail.com", "pass");
 		// when
 		User member1 = userRepository.save(user1);
 		// then
@@ -39,7 +38,7 @@ class UserTest {
 	@Test
 	void givenSaveUser_whenFindUserBySameEmail_thenFindUserIdEqualsToSavedUserId() throws Exception {
 		// given
-		User savedUser = userRepository.save(new User("myeonghee.son@gmail.com", "pass", "user1"));
+		User savedUser = userRepository.save(User.inActiveStatusOf("myeonghee.son@gmail.com", "pass"));
 		// when
 		User findeduser = userRepository.findOneByEmail("myeonghee.son@gmail.com");
 		// then

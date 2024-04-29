@@ -1,9 +1,8 @@
 package son.kingofsettlement.user.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.SignUpException;
@@ -20,7 +19,7 @@ public class SignUpService {
 	private final UserRepository userRepository;
 
 	public User signUp(SignUpRequest req) throws SignUpException {
-		User user = new User(req.getEmail(), req.getPassword(), req.getNickname());
+		User user = User.inActiveStatusOf("myeonghee.son@gmail.com", "pass");
 		if (isDuplicatedUser(user.getEmail())) {
 			throw new SignUpException("중복된 이메일입니다.");
 		}

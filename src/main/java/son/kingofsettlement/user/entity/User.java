@@ -38,15 +38,24 @@ public class User {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	public User() {
+	private User() {
 	}
 
-	public User(String email, String password, String nickname) {
+	public User(String email, String password, UserStatus activityStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.email = email;
 		this.password = password;
-		this.nickname = nickname;
-		this.activityStatus = UserStatus.INACTIVE;
-		this.createdAt = LocalDateTime.now();
-		this.updatedAt = LocalDateTime.now();
+		this.activityStatus = activityStatus;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
+	}
+
+	public static User inActiveStatusOf(String email, String password) {
+		return new User(
+				email,
+				password,
+				UserStatus.INACTIVE,
+				LocalDateTime.now(),
+				LocalDateTime.now()
+		);
 	}
 }
