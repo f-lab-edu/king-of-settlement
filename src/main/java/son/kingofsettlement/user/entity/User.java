@@ -18,18 +18,14 @@ public class User {
 	// 엔티티 클래스의 필드와 데이터베이스 테이블의 컬럼을 매핑하는데 사용되며,  name, nullable, unique 등의 속성을 가지고 있어, 데이터베이스 컬럼의 속성을 정의
 	@Column(name = "id")
 	private Long id;
-	@Column(name = "encrypted_email")
+	@Column(name = "encrypted_email", unique = true)
 	private String email;
 	@Column(name = "hashed_password")
 	private String password;
-	@Column(name = "session_id")
-	private String session_key;
-	@Column(name = "nickname")
-	private String nickname;
-	@Column(name = "profile_url")
-	private String profileUrl;
-	@Column(name = "introduction")
-	private String introduction;
+	@Column(name = "session_key")
+	private String sessionKey;
+	@Embedded
+	private UserProfile profile;
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserStatus activityStatus;
