@@ -23,7 +23,7 @@ public class User {
 	@Column(name = "hashed_password")
 	private String password;
 	@Column(name = "session_id")
-	private String sessionId;
+	private String session_key;
 	@Column(name = "nickname")
 	private String nickname;
 	@Column(name = "profile_url")
