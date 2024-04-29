@@ -1,13 +1,12 @@
 package son.kingofsettlement.user.service;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
@@ -15,6 +14,8 @@ import son.kingofsettlement.user.exception.EncryptException;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.exception.UserDoseNotExist;
 import son.kingofsettlement.user.repository.UserRepository;
+
+import java.util.Optional;
 
 // 해당 클래스가 비즈니스 로직을 수행하는 서비스 클래스임을 나타내는 어노테이션으로, 주로 서비스 계층의 클래스에 사용
 @Service
@@ -42,7 +43,7 @@ public class UserService {
 		String password = req.getPassword();
 		String email = req.getEmail();
 		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
-			.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
+				.orElseThrow(() -> new UserDoseNotExist("해당 유저가 존재하지 않습니다."));
 		session.setMaxInactiveInterval(1800);
 		if (passwordEncoder.matches(password, existUser.getPassword())) {
 			existUser.updateSessionId(session.getId());
@@ -55,4 +56,15 @@ public class UserService {
 			throw new SignUpException("중복된 이메일입니다.");
 		}
 	}
+
+	@Transactional
+	public void logout(HttpServletRequest request) throws UserDoseNotExist {
+		HttpSession session = request.getSession(false);
+		if (session != null) {
+			session.invalidate();
+			Optional<User> oneBySessionId = userRepository.findOneBySessionKey(session.getId());
+			oneBySessionId.ifPresent(user -> user.updateSessionId(""));
+		}
+	}
+
 }

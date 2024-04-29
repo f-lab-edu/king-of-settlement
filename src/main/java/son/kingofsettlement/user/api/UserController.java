@@ -1,15 +1,13 @@
 package son.kingofsettlement.user.api;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.dto.SignUpResponse;
@@ -64,5 +62,11 @@ public class UserController {
 			return ResponseEntity.badRequest().body(new SignUpResponse("LogIn Fail!", null));
 		}
 		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new SignUpResponse("LogIn Succeed!", loginUser.getId()));
+	}
+
+	@GetMapping("/logout")
+	public ResponseEntity<Object> logout(final HttpServletRequest request, final HttpServletResponse response) {
+		userService.logout(request);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new SignUpResponse("Logout Succeed!", null));
 	}
 }
