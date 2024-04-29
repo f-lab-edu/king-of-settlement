@@ -38,10 +38,10 @@ public class User {
 	@Column(name = "updated_at")
 	private LocalDateTime updatedAt;
 
-	private User() {
+	protected User() {
 	}
 
-	public User(String email, String password, UserStatus activityStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+	private User(String email, String password, UserStatus activityStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
 		this.email = email;
 		this.password = password;
 		this.activityStatus = activityStatus;
