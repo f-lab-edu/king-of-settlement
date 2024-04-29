@@ -67,4 +67,10 @@ public class UserController {
 			return ResponseEntity.badRequest().body(CommonResponse.fail(UserStatusCode.LOGIN_FAILED, e.getMessage()));
 		}
 	}
+
+	@PostMapping("/logout")
+	public ResponseEntity<Object> logout(final HttpServletRequest request) {
+		userService.logout(request);
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.success(CommonStatusCode.Succeed));
+	}
 }
