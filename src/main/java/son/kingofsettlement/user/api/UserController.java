@@ -1,5 +1,6 @@
 package son.kingofsettlement.user.api;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,11 +10,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.dto.SignUpResponse;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.service.UserService;
+
+import javax.security.auth.login.LoginException;
 
 // 해당 클래스가 RESTful 웹 서비스의 컨트롤러임을 나타내는 어노테이션으로, HTTP 요청과 응답을 처리하는 컨트롤러로 사용
 @RestController
@@ -45,5 +49,20 @@ public class UserController {
 			return ResponseEntity.badRequest().body(new SignUpResponse(e.getMessage(), null));
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(new SignUpResponse("SignUp Succeed!", user.getId()));
+	}
+
+	@PostMapping("/login")
+	public ResponseEntity<Object> login(@RequestBody @Valid LogInRequest req, BindingResult bindingResult,
+	                                    final HttpServletRequest request) throws LoginException {
+		User loginUser;
+		try {
+			if (bindingResult.hasFieldErrors()) {
+				throw new LoginException(bindingResult.getFieldError().getDefaultMessage());
+			}
+			loginUser = userService.login(request, req);
+		} catch (LoginException e) {
+			return ResponseEntity.badRequest().body(new SignUpResponse("LogIn Fail!", null));
+		}
+		return ResponseEntity.status(HttpStatus.ACCEPTED).body(new SignUpResponse("LogIn Succeed!", loginUser.getId()));
 	}
 }
