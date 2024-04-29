@@ -16,7 +16,7 @@ public class User {
 	// 주(primary) 키 값이 자동으로 생성되는 방식을 설정하는 어노테이션으로, 주로 자동으로 증가하는 식별자를 생성할 때 사용
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	// 엔티티 클래스의 필드와 데이터베이스 테이블의 컬럼을 매핑하는데 사용되며,  name, nullable, unique 등의 속성을 가지고 있어, 데이터베이스 컬럼의 속성을 정의
-	@Column(name = "user_id")
+	@Column(name = "id")
 	private Long id;
 	@Column(name = "encrypted_email")
 	private String email;
