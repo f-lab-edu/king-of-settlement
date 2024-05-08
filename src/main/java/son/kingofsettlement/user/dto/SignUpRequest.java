@@ -9,13 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class SignUpRequest {
-	@NotBlank
-	@Email(message = "이메일 형식이 잘못되었습니다.")
+	@NotBlank // 공백 허용하지 않음.
+	@Email(message = "이메일 형식이 잘못되었습니다.") // 이메일형식 검증
 	String email;
+	@NotBlank // 공백 허용하지 않음.
 	@Pattern(regexp = "(((?=(.*[A-Z].*){1,})(?=(.*[a-z].*){1,})(?=(.*[!\"#$%&'()*+,\\-./:;<=>?@\\[\\]^_`{|}~].*){1,})(?=(.*[0-9].*){1,})){8,15}).*",
 			message = "비밀번호를 확인해주세요")
 	String password;
-	
+
 	@Pattern(regexp = "^[a-zA-Z0-9ㄱ-ㅎ가-힣]{2,10}$",
 			message = "닉네임을 확인해주세요")
 	String nickname;
