@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
-import son.kingofsettlement.user.exception.EncryptException;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.repository.UserRepository;
 
@@ -20,7 +19,7 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
-    public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
+    public User signUp(SignUpRequest req) throws SignUpException {
         String encryptedEmail = AESEncryption.encrypt(req.getEmail());
         if (userRepository.findOneByEmail(encryptedEmail).isPresent()) {
             throw new SignUpException("중복된 이메일입니다.");
