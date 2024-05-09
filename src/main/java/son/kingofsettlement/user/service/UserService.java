@@ -9,11 +9,6 @@ import son.kingofsettlement.user.exception.EncryptException;
 import son.kingofsettlement.user.exception.SignUpException;
 import son.kingofsettlement.user.repository.UserRepository;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-
 
 // 해당 클래스가 비즈니스 로직을 수행하는 서비스 클래스임을 나타내는 어노테이션으로, 주로 서비스 계층의 클래스에 사용
 @Service
@@ -28,33 +23,11 @@ public class UserService {
     public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
         isDuplicatedUser(req.getEmail());
         String encryptedEmail = AESEncryption.encrypt(req.getEmail());
-        byte[] salt = generateSalt();
-        String encryptedPassword = hashPassword(req.getPassword(), salt);
+        // 보안강도 설정, 숫자가 높을 수록 hashing 하는데 많은 시간 소요.
+        String salt = BCrypt.gensalt(10);
+        String encryptedPassword = BCrypt.hashpw(req.getPassword(), salt);
         User user = User.inActiveStatusOf(encryptedEmail, encryptedPassword);
         return userRepository.save(user);
-    }
-
-    private String hashPassword(String password, byte[] salt) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            digest.reset();
-            digest.update(salt);
-            StringBuilder encryptPassword = new StringBuilder();
-            byte[] hashedByteArrayPassword = digest.digest(password.getBytes(StandardCharsets.UTF_8));
-            for (byte b : hashedByteArrayPassword) {
-                encryptPassword.append(String.format("%02x", b));
-            }
-            return String.valueOf(encryptPassword);
-        } catch (NoSuchAlgorithmException e) {
-            throw new EncryptException(e.getMessage());
-        }
-    }
-
-    private byte[] generateSalt() {
-        SecureRandom random = new SecureRandom();
-        byte[] salt = new byte[256];
-        random.nextBytes(salt);
-        return salt;
     }
 
     public void isDuplicatedUser(String email) throws SignUpException {
