@@ -26,7 +26,7 @@ public class UserService {
         }
         String salt = BCrypt.gensalt(10);
         String encryptedPassword = BCrypt.hashpw(req.getPassword(), salt);
-        User user = User.inActiveStatusOf(encryptedEmail, encryptedPassword);
+        User user = User.of(encryptedEmail, encryptedPassword);
         return userRepository.save(user);
     }
 }
