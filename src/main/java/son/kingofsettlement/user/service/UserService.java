@@ -22,16 +22,12 @@ public class UserService {
     @Transactional
     public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
         String encryptedEmail = AESEncryption.encrypt(req.getEmail());
-        if (isDuplicatedUser(encryptedEmail)) {
+        if (userRepository.findOneByEmail(encryptedEmail).isPresent()) {
             throw new SignUpException("중복된 이메일입니다.");
         }
         String salt = BCrypt.gensalt(10);
         String encryptedPassword = BCrypt.hashpw(req.getPassword(), salt);
         User user = User.inActiveStatusOf(encryptedEmail, encryptedPassword);
         return userRepository.save(user);
-    }
-
-    public boolean isDuplicatedUser(String email) {
-        return userRepository.findOneByEmail(email) != null;
     }
 }
