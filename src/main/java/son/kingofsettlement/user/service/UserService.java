@@ -21,18 +21,17 @@ public class UserService {
 
     @Transactional
     public User signUp(SignUpRequest req) throws EncryptException, SignUpException {
-        isDuplicatedUser(req.getEmail());
         String encryptedEmail = AESEncryption.encrypt(req.getEmail());
-        // 보안강도 설정, 숫자가 높을 수록 hashing 하는데 많은 시간 소요.
+        if (isDuplicatedUser(encryptedEmail)) {
+            throw new SignUpException("중복된 이메일입니다.");
+        }
         String salt = BCrypt.gensalt(10);
         String encryptedPassword = BCrypt.hashpw(req.getPassword(), salt);
         User user = User.inActiveStatusOf(encryptedEmail, encryptedPassword);
         return userRepository.save(user);
     }
 
-    public void isDuplicatedUser(String email) throws SignUpException {
-        if (userRepository.findOneByEmail(email).isPresent()) {
-            throw new SignUpException("중복된 이메일입니다.");
-        }
+    public boolean isDuplicatedUser(String email) {
+        return userRepository.findOneByEmail(email) != null;
     }
 }
