@@ -1,5 +1,6 @@
 package son.kingofsettlement.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Getter;
 import son.kingofsettlement.user.dto.UserStatus;
@@ -21,13 +22,24 @@ public class User {
     private Long id;
     @Column(name = "encrypted_email", unique = true)
     private String email;
+    // Jackson 라이브러리에서 JSON 직렬화 및 역직렬화 과정에서 특정 필드를 무시하도록 지정하는 데 사용되는 어노테이션
+    @JsonIgnore
     @Column(name = "hashed_password")
     private String password;
+    // Jackson 라이브러리에서 JSON 직렬화 및 역직렬화 과정에서 특정 필드를 무시하도록 지정하는 데 사용되는 어노테이션
+    @JsonIgnore
     @Column(name = "session_key")
     private String sessionKey;
     // JPA에서 사용되는 어노테이션으로, 엔티티 클래스에 내장될(embedded) 값 객체를 지정하는 데 사용됩니다. 내장(embedded) 객체는 엔티티의 일부로서 엔티티 테이블에 함께 저장되는 객체를 의미
     @Embedded
     private UserProfile profile;
+    /* @Enumerated :
+        JPA 엔티티 클래스에서 열거형(Enum) 타입의 필드를 매핑할 때 사용.
+        이 어노테이션을 사용하면 해당 열거형 상수를 문자열로 데이터베이스에 저장하고 조회할 수 있다.
+        두 가지 매핑 방식이 있다.
+        1. ORDINAL : 열거형 상수가 선언된 순서에 따라 0, 1, 2, ...와 같은 숫자로 매핑
+        2. STRING : 열거형 상수의 이름에 따라 데이터베이스에 저장
+     */
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private UserStatus activityStatus;
@@ -57,8 +69,8 @@ public class User {
         );
     }
 
-    public void updateSessionId(String sessionId) {
-        this.sessionKey = sessionId;
+    public void updateSessionKey(String sessionKey) {
+        this.sessionKey = sessionKey;
         this.updatedAt = LocalDateTime.now();
     }
 
