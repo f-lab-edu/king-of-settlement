@@ -1,79 +1,73 @@
 package son.kingofsettlement.user.entity;
 
-import java.time.LocalDateTime;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Embedded;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import son.kingofsettlement.user.dto.UserStatus;
 import son.kingofsettlement.user.service.AESEncryption;
+
+import java.time.LocalDateTime;
 
 // JPA 엔티티 클래스임을 나타내는 어노테이션으로, 데이터베이스의 테이블과 매핑되는 클래스임을 표시
 @Entity
 // Lombok 라이브러리에서 제공하는 어노테이션으로, 클래스의 필드에 대한 getter 메소드를 자동으로 생성
 @Getter
 public class User {
-	// JPA 엔티티 클래스에서 주(primary) 식별자 필드를 지정하는 어노테이션으로, 해당 필드가 엔티티의 주키임을 나타냄
-	@Id
-	// 주(primary) 키 값이 자동으로 생성되는 방식을 설정하는 어노테이션으로, 주로 자동으로 증가하는 식별자를 생성할 때 사용
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	// 엔티티 클래스의 필드와 데이터베이스 테이블의 컬럼을 매핑하는데 사용되며,  name, nullable, unique 등의 속성을 가지고 있어, 데이터베이스 컬럼의 속성을 정의
-	@Column(name = "id")
-	private Long id;
-	@Column(name = "encrypted_email", unique = true)
-	private String email;
-	@Column(name = "hashed_password")
-	private String password;
-	@Column(name = "session_key")
-	private String sessionKey;
-	@Embedded
-	private UserProfile profile;
-	@Enumerated(EnumType.STRING)
-	@Column(name = "status")
-	private UserStatus activityStatus;
-	@Column(name = "created_at")
-	private LocalDateTime createdAt;
-	@Column(name = "updated_at")
-	private LocalDateTime updatedAt;
+    // JPA 엔티티 클래스에서 주(primary) 식별자 필드를 지정하는 어노테이션으로, 해당 필드가 엔티티의 주키임을 나타냄
+    @Id
+    // 주(primary) 키 값이 자동으로 생성되는 방식을 설정하는 어노테이션으로, 주로 자동으로 증가하는 식별자를 생성할 때 사용
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    // 엔티티 클래스의 필드와 데이터베이스 테이블의 컬럼을 매핑하는데 사용되며,  name, nullable, unique 등의 속성을 가지고 있어, 데이터베이스 컬럼의 속성을 정의
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "encrypted_email", unique = true)
+    private String email;
+    @Column(name = "hashed_password")
+    private String password;
+    @Column(name = "session_key")
+    private String sessionKey;
+    // JPA에서 사용되는 어노테이션으로, 엔티티 클래스에 내장될(embedded) 값 객체를 지정하는 데 사용됩니다. 내장(embedded) 객체는 엔티티의 일부로서 엔티티 테이블에 함께 저장되는 객체를 의미
+    @Embedded
+    private UserProfile profile;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private UserStatus activityStatus;
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-	protected User() {
-	}
+    protected User() {
+    }
 
-	private User(String email, String password, UserStatus activityStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
-		this.email = email;
-		this.password = password;
-		this.activityStatus = activityStatus;
-		this.createdAt = createdAt;
-		this.updatedAt = updatedAt;
-	}
+    private User(String email, String password, UserStatus activityStatus, LocalDateTime createdAt, LocalDateTime updatedAt) {
+        this.email = email;
+        this.password = password;
+        this.activityStatus = activityStatus;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 
-	public static User inActiveStatusOf(String email, String password) {
-		return new User(
-				email,
-				password,
-				UserStatus.INACTIVE,
-				LocalDateTime.now(),
-				LocalDateTime.now()
-		);
-	}
+    public static User inActiveStatusOf(String email, String password) {
+        return new User(
+                email,
+                password,
+                UserStatus.INACTIVE,
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+    }
 
-	public void updateSessionId(String sessionId) {
-		this.sessionKey = sessionId;
-		this.updatedAt = LocalDateTime.now();
-	}
+    public void updateSessionId(String sessionId) {
+        this.sessionKey = sessionId;
+        this.updatedAt = LocalDateTime.now();
+    }
 
-	private void decryptEmail() {
-		this.email = AESEncryption.decrypt(email);
-	}
+    private void decryptEmail() {
+        this.email = AESEncryption.decrypt(email);
+    }
 
-	public String getEmail() {
-		decryptEmail();
-		return email;
-	}
+    public String getEmail() {
+        decryptEmail();
+        return email;
+    }
 }
