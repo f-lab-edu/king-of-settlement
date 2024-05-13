@@ -59,7 +59,7 @@ public class User {
         this.updatedAt = updatedAt;
     }
 
-    public static User inActiveStatusOf(String email, String password) {
+    public static User of(String email, String password) {
         return new User(
                 email,
                 password,
@@ -78,7 +78,7 @@ public class User {
         this.email = AESEncryption.decrypt(email);
     }
 
-    public String getEmail() {
+    public String getDecryptedEmail() {
         decryptEmail();
         return email;
     }
