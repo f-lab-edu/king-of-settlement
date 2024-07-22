@@ -1,8 +1,9 @@
 package son.kingofsettlement.user.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import lombok.RequiredArgsConstructor;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.SignUpException;
@@ -13,20 +14,19 @@ import son.kingofsettlement.user.repository.UserRepository;
 // Lombok 라이브러리에서 제공하는 어노테이션으로, final 필드가 있는 생성자를 생성해주는 역할
 @RequiredArgsConstructor
 // 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
-@Transactional(readOnly = true)
-public class SignUpService {
+public class UserService {
 
 	private final UserRepository userRepository;
 
+	@Transactional
 	public User signUp(SignUpRequest req) throws SignUpException {
-		User user = User.inActiveStatusOf(req.getEmail(), req.getPassword());
-		if (isDuplicatedUser(user.getEmail())) {
+		String encryptedEmail = AESEncryption.encrypt(req.getEmail());
+		if (userRepository.findOneByEmail(encryptedEmail).isPresent()) {
 			throw new SignUpException("중복된 이메일입니다.");
 		}
+		String salt = BCrypt.gensalt(10);
+		String encryptedPassword = BCrypt.hashpw(req.getPassword(), salt);
+		User user = User.of(encryptedEmail, encryptedPassword);
 		return userRepository.save(user);
-	}
-
-	public boolean isDuplicatedUser(String email) {
-		return userRepository.findOneByEmail(email) != null;
 	}
 }
