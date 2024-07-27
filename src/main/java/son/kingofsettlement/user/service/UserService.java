@@ -1,5 +1,7 @@
 package son.kingofsettlement.user.service;
 
+import java.util.Optional;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -8,9 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
+import son.kingofsettlement.user.dto.UserUpdateRequest;
+import son.kingofsettlement.user.dto.UserUpdateRequest;
 import son.kingofsettlement.user.entity.User;
+import son.kingofsettlement.user.entity.UserProfile;
 import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.repository.UserRepository;
+
+import java.util.Optional;
 
 // 해당 클래스가 비즈니스 로직을 수행하는 서비스 클래스임을 나타내는 어노테이션으로, 주로 서비스 계층의 클래스에 사용
 @Service
@@ -53,5 +60,16 @@ public class UserService {
 	public void logout(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.invalidate();
+	}
+
+	public User updateProfile(UserUpdateRequest req) throws Exception {
+		Optional<User> findUser = userRepository.findOneById(req.getUserId());
+		if (!findUser.isPresent()) {
+			throw new Exception("존재하지 않는 사용자입니다."); // execption handler 적용 예정
+		}
+		User user = findUser.get();
+		UserProfile profile = UserProfile.of(req.getNickname(), req.getProfileUrl(), req.getIntroduction());
+		user.updateProfile(profile);
+		return userRepository.save(user);
 	}
 }

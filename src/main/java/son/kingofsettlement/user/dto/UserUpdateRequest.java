@@ -9,6 +9,9 @@ import lombok.ToString;
 public class UserUpdateRequest {
 
 	@NotNull
+	Long userId;
+
+	@NotNull
 	String nickname;
 	@NotNull
 	String profileUrl;

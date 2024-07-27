@@ -6,6 +6,8 @@ import son.kingofsettlement.user.entity.User;
 import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
+	Optional<User> findOneById(Long id);
+
     Optional<User> findOneByEmail(String email);
 
     Optional<User> findOneBySessionKey(String sessionKey);

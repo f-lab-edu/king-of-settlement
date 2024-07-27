@@ -14,4 +14,21 @@ public class UserProfile {
     private String nickname;
     private String profileUrl;
     private String introduction;
+
+	public UserProfile() {
+	}
+
+	public UserProfile(String nickname, String profileUrl, String introduction) {
+		this.nickname = nickname;
+		this.profileUrl = profileUrl;
+		this.introduction = introduction;
+	}
+
+	public static UserProfile of(String nickname, String profileUrl, String introduction) {
+		return new UserProfile(
+				nickname,
+				profileUrl,
+				introduction
+		);
+	}
 }
