@@ -70,4 +70,14 @@ public class UserService {
 		user.updateProfile(profile);
 		return userRepository.save(user);
 	}
+
+	public Long delete(Long userId) {
+		Optional<User> findUser = userRepository.findOneById(userId);
+		if (findUser.isEmpty()) {
+			throw new UserException(UserStatusCode.USER_NOT_FOUND);
+		}
+		User user = findUser.get();
+		return user.delete();
+	}
+
 }
