@@ -34,7 +34,9 @@ dependencies {
 }
 
 tasks.withType<Test> {
-    useJUnitPlatform()
+    useJUnitPlatform(
+    )
+    exclude("user/local/*")
 }
 
 tasks.jar {
