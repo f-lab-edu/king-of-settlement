@@ -30,7 +30,11 @@ public class User {
     @JsonIgnore
     @Column(name = "session_key")
     private String sessionKey;
-    // JPA에서 사용되는 어노테이션으로, 엔티티 클래스에 내장될(embedded) 값 객체를 지정하는 데 사용됩니다. 내장(embedded) 객체는 엔티티의 일부로서 엔티티 테이블에 함께 저장되는 객체를 의미
+    /*
+        @Embeddable :
+            JPA(Java Persistence API)에서 사용되는 어노테이션으로, 엔티티에 포함될 값 객체를 정의하는 데 사용됩니다.
+            이 어노테이션을 사용하여 값 객체를 정의하면, 해당 값 객체는 엔티티의 일부로서 해당 테이블에 직접 매핑됩니다.
+     */
     @Embedded
     private UserProfile profile;
     /* @Enumerated :

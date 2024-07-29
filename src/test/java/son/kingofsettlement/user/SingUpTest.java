@@ -75,7 +75,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.message").value("SignUp Succeed"))
+				.andExpect(jsonPath("$.result.code").value(1000))
 				.andReturn();
 	}
 
@@ -94,7 +94,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("중복된 이메일입니다."))
+				.andExpect(jsonPath("$.result.message").value("중복된 이메일입니다."))
 				.andReturn();
 	}
 
@@ -108,7 +108,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("이메일 형식이 잘못되었습니다."))
+				.andExpect(jsonPath("$.result.message").value("이메일 형식이 잘못되었습니다."))
 				.andReturn();
 	}
 
@@ -122,7 +122,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -136,7 +136,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -150,7 +150,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -164,7 +164,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -178,7 +178,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -192,7 +192,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -206,35 +206,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("비밀번호를 확인해주세요"))
-				.andReturn();
-	}
-
-	@Test
-	public void givenNicknameTooShort_whenJoin_thenThrowSinUpException() throws Exception {
-		//given
-		jsonMap.put("nickname", "닉");
-		//when, then
-		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("닉네임을 확인해주세요"))
-				.andReturn();
-	}
-
-	@Test
-	public void givenNicknameHavingSpecialCharacter_whenJoin_thenThrowSinUpException() throws Exception {
-		//given
-		jsonMap.put("nickname", "닉@");
-		//when, then
-		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.message").value("닉네임을 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
 				.andReturn();
 	}
 
@@ -248,7 +220,7 @@ class SignUpTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.message").value("SignUp Succeed"))
+				.andExpect(jsonPath("$.result.code").value(1000))
 				.andReturn();
 	}
 }

@@ -5,9 +5,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
 /*
-	@SpringBootApplication
-	: Spring Boot 애플리케이션의 주 클래스에 붙이며, 구성(Configuration), 자동 구성(Auto-configuration),
-	컴포넌트 스캔을 단순하게 처리해준다.	이를 통해 애플리케이션의 설정과 시작이 편리해짐.
+    @SpringBootApplication
+    : Spring Boot 애플리케이션의 주 클래스에 붙이며, 구성(Configuration), 자동 구성(Auto-configuration),
+    컴포넌트 스캔을 단순하게 처리해준다.	이를 통해 애플리케이션의 설정과 시작이 편리해짐.
 */
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
 public class KingOfSettlementApplication {
