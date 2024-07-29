@@ -3,8 +3,6 @@ package son.kingofsettlement.user.service;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.crypto.password.Pbkdf2PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import son.kingofsettlement.user.dto.LogInRequest;
@@ -21,7 +19,6 @@ import son.kingofsettlement.user.repository.UserRepository;
 public class UserService {
 
 	private final UserRepository userRepository;
-	private final PasswordEncoder passwordEncoder = Pbkdf2PasswordEncoder.defaultsForSpringSecurity_v5_8();
 
 	// 트랜잭션 처리를 지원하기 위한 어노테이션으로, 해당 메소드나 클래스에 트랜잭션을 적용
 	@Transactional
@@ -46,7 +43,7 @@ public class UserService {
 		HttpSession session = request.getSession();
 		session.setMaxInactiveInterval(1800);
 		session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
-		if (passwordEncoder.matches(password, existUser.getPassword())) {
+		if (BCrypt.checkpw(password, existUser.getPassword())) {
 			existUser.updateSessionKey(session.getId());
 		}
 		return existUser;
