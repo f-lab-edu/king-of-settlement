@@ -15,7 +15,6 @@ import son.kingofsettlement.common.statusCode.CommonStatusCode;
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
-import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.service.UserService;
 
 // 해당 클래스가 RESTful 웹 서비스의 컨트롤러임을 나타내는 어노테이션으로, HTTP 요청과 응답을 처리하는 컨트롤러로 사용
@@ -37,28 +36,20 @@ public class UserController {
                 주로 @RequestBody로 전달된 객체의 유효성을 검사하는 데에 사용되며, 만약 객체에 유효성 검사를 위한 어노테이션이 포함되어 있다면,
                 객체의 유효성을 검사하고 유효하지 않은 경우에는 예외를 발생.
              */ @Valid SignUpRequest req) {
-		try {
-			userService.signUp(req);
-			return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(UserStatusCode.USER_CREATED));
-		} catch (Exception e) {
-			throw new UserException(CommonStatusCode.COMMON_BAD_REQUEST, e.getMessage());
-		}
+		userService.signUp(req);
+		return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(UserStatusCode.USER_CREATED));
 	}
 
 	@PostMapping("/login")
 	public ResponseEntity<CommonResponse<?>> login(@RequestBody @Valid LogInRequest req,
 		final HttpServletRequest request) {
-		try {
-			return ResponseEntity.ok()
-				.body(CommonResponse.success(userService.login(request, req), UserStatusCode.LOGIN_SUCCESS));
-		} catch (Exception e) {
-			throw new UserException(UserStatusCode.LOGIN_FAILED, e.getMessage());
-		}
+		return ResponseEntity.ok()
+			.body(CommonResponse.success(userService.login(request, req), UserStatusCode.LOGIN_SUCCESS));
 	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<Object> logout(final HttpServletRequest request) {
 		userService.logout(request);
-		return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.success(CommonStatusCode.Succeed));
+		return ResponseEntity.ok().body(CommonResponse.success(CommonStatusCode.Succeed));
 	}
 }
