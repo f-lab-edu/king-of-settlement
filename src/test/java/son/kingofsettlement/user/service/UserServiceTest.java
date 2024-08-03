@@ -1,22 +1,22 @@
 package son.kingofsettlement.user.service;
 
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+
+import java.util.Optional;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.repository.UserRepository;
-
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 
 /*
 	@ExtendWith(MockitoExtension.class)
@@ -45,12 +45,12 @@ class UserServiceTest {
 	void testSignUp_WithUniqueEmail() {
 		// given
 		User user = User.of("myeonghee.son@gmail.com", "pass");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
+		SignUpRequest req = new SignUpRequest("myeonghee.son@gmail.com", "pass");
 		// when
 		when(userRepository.save(any(User.class))).thenReturn(user);
 		User registeredUser = userService.signUp(req);
+		assertEquals(user, registeredUser);
 		// then
-		assertEquals(user.getEmail(), registeredUser.getEmail());
 		assertEquals(user.getPassword(), registeredUser.getPassword());
 	}
 
@@ -58,10 +58,11 @@ class UserServiceTest {
 	public void testSignUp_WithDuplicateEmail() {
 		//given
 		User user = User.of("myeonghee.son1@gmail.com", "pass");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
-//		userService.signUp(req);
+		SignUpRequest req = new SignUpRequest("myeonghee.son@gmail.com", "pass");
+		//		userService.signUp(req);
 		//when
-		when(userRepository.findOneByEmail(AESEncryption.encrypt(user.getEmail()))).thenReturn(Optional.of(user));
+		when(userRepository.findOneByEmail(AESEncryption.encrypt("myeonghee.son@gmail.com"))).thenReturn(
+			Optional.of(user));
 		//then
 		assertThrows(UserException.class, () -> userService.signUp(req));
 	}

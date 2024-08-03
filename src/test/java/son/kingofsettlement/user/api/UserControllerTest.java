@@ -1,6 +1,13 @@
 package son.kingofsettlement.user.api;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,21 +19,14 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.service.UserService;
-
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 // Spring 애플리케이션 전체를 로드할 필요없이 특정한 컨트롤러에 관련된 빈들만 로드하므로 효율적이며, 테스트 속도가 빠르다.
 @WebMvcTest(UserController.class)
@@ -75,31 +75,29 @@ class UserControllerTest {
 	void testSignUp_Success() throws Exception {
 		//given
 		User user = User.of("melody1@gmail.com", "aRs!@#!@33123df");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
+		SignUpRequest req = new SignUpRequest("melody1@gmail.com", "aRs!@#!@33123df");
 		//when
 		when(userService.signUp(any(SignUpRequest.class))).thenReturn(user);
 		//then
 		mockMvc.perform(post("/users")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(req)))
-				.andExpect(status().isCreated())
-				.andReturn();
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req)))
+			.andExpect(status().isCreated())
+			.andReturn();
 	}
 
 	@Test
 	void testSignUp_Fail() throws Exception {
 		//given
-		User user = User.of("melody1@gmail.com", "aRs!@#!@33123df");
-		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
+		SignUpRequest req = new SignUpRequest("melody1@gmail.com", "aRs!@#!@33123df");
 		//when
 		doThrow(new UserException(UserStatusCode.DUPLICATED_USER)).when(userService).signUp(any(SignUpRequest.class));
 		//then
 		mockMvc.perform(post("/users")
-						.contentType(MediaType.APPLICATION_JSON)
-						.content(objectMapper.writeValueAsString(req)))
-				.andExpect(status().isBadRequest());
+				.contentType(MediaType.APPLICATION_JSON)
+				.content(objectMapper.writeValueAsString(req)))
+			.andExpect(status().isBadRequest());
 	}
-
 
 	// JUnit에서 테스트 메소드임을 나타내는 어노테이션으로, 해당 메소드가 테스트를 실행하는 메소드임을 표시
 	@Test
@@ -113,12 +111,12 @@ class UserControllerTest {
 		jsonMap.put("email", email2);
 		//then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED.getStatusCode()))
+			.andReturn();
 	}
 
 	@Test
@@ -133,12 +131,12 @@ class UserControllerTest {
 		doThrow(new UserException(UserStatusCode.DUPLICATED_USER)).when(userService).signUp(any(SignUpRequest.class));
 		//then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value(UserStatusCode.DUPLICATED_USER.getDescription()))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value(UserStatusCode.DUPLICATED_USER.getDescription()))
+			.andReturn();
 	}
 
 	@Test
@@ -147,12 +145,12 @@ class UserControllerTest {
 		jsonMap.put("email", "melody1gmail.com");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value(UserStatusCode.DUPLICATED_USER.getDescription()))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("email:Invalid email, "))
+			.andReturn();
 	}
 
 	@Test
@@ -161,12 +159,12 @@ class UserControllerTest {
 		jsonMap.put("password", "124");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -175,12 +173,12 @@ class UserControllerTest {
 		jsonMap.put("password", "12345sdfsdf45645!!901234567");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -189,12 +187,12 @@ class UserControllerTest {
 		jsonMap.put("password", "1sdf !!dasdD");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -203,12 +201,12 @@ class UserControllerTest {
 		jsonMap.put("password", "145w2@3123");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -217,12 +215,12 @@ class UserControllerTest {
 		jsonMap.put("password", "145W2@3123");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -231,12 +229,12 @@ class UserControllerTest {
 		jsonMap.put("password", "sdf!dfWs@@@");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -245,12 +243,12 @@ class UserControllerTest {
 		jsonMap.put("password", "sdfdf45645Ws");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("Invalid password"))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.result.message").value("password:Invalid password, "))
+			.andReturn();
 	}
 
 	@Test
@@ -259,12 +257,12 @@ class UserControllerTest {
 		jsonMap.put("nickname", "123닉");
 		//when, then
 		MvcResult mvcResult = mockMvc.perform(
-						MockMvcRequestBuilders.post("/users")
-								.contentType(MediaType.APPLICATION_JSON)
-								.content(objectMapper.writeValueAsString(jsonMap)))
-				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED))
-				.andReturn();
+				MockMvcRequestBuilders.post("/users")
+					.contentType(MediaType.APPLICATION_JSON)
+					.content(objectMapper.writeValueAsString(jsonMap)))
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED.getStatusCode()))
+			.andReturn();
 	}
 
 }
