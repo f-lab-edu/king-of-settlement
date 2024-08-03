@@ -48,4 +48,13 @@ public class UserService {
 		}
 		return existUser;
 	}
+
+	@Transactional
+	public void logout(HttpServletRequest request) {
+		HttpSession session = request.getSession();
+		session.getAttribute(SessionConst.LOGIN_MEMBER);
+		if (session != null) {
+			session.invalidate();
+		}
+	}
 }
