@@ -3,7 +3,11 @@ package son.kingofsettlement.common.exception.handler;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import son.kingofsettlement.common.CommonResponse;
@@ -33,6 +37,19 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(value = Exception.class)
 	public ResponseEntity<CommonResponse<Object>> exception(Exception exception) {
 		log.error(">>>>>> Exception", exception);
-		return ResponseEntity.status(500).body(CommonResponse.fail(CommonStatusCode.SERVER_ERROR, exception));
+		return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(CommonResponse.fail(CommonStatusCode.SERVER_ERROR, exception));
+	}
+
+	@ExceptionHandler(BindException.class)
+	public ResponseEntity<CommonResponse<Object>> handleMethodArgumentNotValidException(BindException exception) {
+		log.error(">>>>>> BindException", exception);
+		BindingResult bindingResult = exception.getBindingResult();
+		StringBuilder stringBuilder = new StringBuilder();
+		for (FieldError fieldError : bindingResult.getFieldErrors()) {
+			stringBuilder.append(fieldError.getField()).append(":");
+			stringBuilder.append(fieldError.getDefaultMessage());
+			stringBuilder.append(", ");
+		}
+		return ResponseEntity.badRequest().body(CommonResponse.fail(CommonStatusCode.INVALID_INPUT_VALUE, String.valueOf(stringBuilder)));
 	}
 }

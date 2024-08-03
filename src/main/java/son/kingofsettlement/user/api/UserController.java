@@ -5,8 +5,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
-import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,8 +16,6 @@ import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.service.UserService;
-
-import java.util.Optional;
 
 // 해당 클래스가 RESTful 웹 서비스의 컨트롤러임을 나타내는 어노테이션으로, HTTP 요청과 응답을 처리하는 컨트롤러로 사용
 @RestController
@@ -39,14 +35,8 @@ public class UserController {
                 자바 플랫폼의 표준 스펙 중 하나인 Bean Validation(JSR-380)을 사용하여 입력 데이터의 유효성을 검사할 때 사용.
                 주로 @RequestBody로 전달된 객체의 유효성을 검사하는 데에 사용되며, 만약 객체에 유효성 검사를 위한 어노테이션이 포함되어 있다면,
                 객체의 유효성을 검사하고 유효하지 않은 경우에는 예외를 발생.
-             */ @Valid SignUpRequest req, BindingResult bindingResult) {
+             */ @Valid SignUpRequest req) {
 		try {
-			if (bindingResult.hasFieldErrors()) {
-				Optional<FieldError> fieldError = Optional.ofNullable(bindingResult.getFieldError());
-				if (fieldError.isPresent()) {
-					throw new UserException(CommonStatusCode.INVALID_INPUT_VALUE, fieldError.get().getDefaultMessage());
-				}
-			}
 			userService.signUp(req);
 			return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(UserStatusCode.USER_CREATED));
 		} catch (Exception e) {
@@ -55,14 +45,8 @@ public class UserController {
 	}
 
 	@PostMapping("/login")
-	public ResponseEntity<CommonResponse<?>> login(@RequestBody @Valid LogInRequest req, BindingResult bindingResult, final HttpServletRequest request) {
+	public ResponseEntity<CommonResponse<?>> login(@RequestBody @Valid LogInRequest req, final HttpServletRequest request) {
 		try {
-			if (bindingResult.hasFieldErrors()) {
-				Optional<FieldError> fieldError = Optional.ofNullable(bindingResult.getFieldError());
-				if (fieldError.isPresent()) {
-					throw new UserException(CommonStatusCode.INVALID_INPUT_VALUE, fieldError.get().getDefaultMessage());
-				}
-			}
 			return ResponseEntity.ok().body(CommonResponse.success(userService.login(request, req), UserStatusCode.LOGIN_SUCCESS));
 		} catch (Exception e) {
 			throw new UserException(UserStatusCode.LOGIN_FAILED, e.getMessage());

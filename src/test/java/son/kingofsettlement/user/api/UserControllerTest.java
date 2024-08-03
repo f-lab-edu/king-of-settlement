@@ -117,7 +117,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.result.code").value(1000))
+				.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED))
 				.andReturn();
 	}
 
@@ -137,7 +137,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("중복된 이메일입니다."))
+				.andExpect(jsonPath("$.result.message").value(UserStatusCode.DUPLICATED_USER.getDescription()))
 				.andReturn();
 	}
 
@@ -151,7 +151,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("이메일 형식이 잘못되었습니다."))
+				.andExpect(jsonPath("$.result.message").value(UserStatusCode.DUPLICATED_USER.getDescription()))
 				.andReturn();
 	}
 
@@ -165,7 +165,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -179,7 +179,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -193,7 +193,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -207,7 +207,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -221,7 +221,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -235,7 +235,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -249,7 +249,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isBadRequest())
-				.andExpect(jsonPath("$.result.message").value("비밀번호를 확인해주세요"))
+				.andExpect(jsonPath("$.result.message").value("Invalid password"))
 				.andReturn();
 	}
 
@@ -263,7 +263,7 @@ class UserControllerTest {
 								.contentType(MediaType.APPLICATION_JSON)
 								.content(objectMapper.writeValueAsString(jsonMap)))
 				.andExpect(status().isCreated())
-				.andExpect(jsonPath("$.result.code").value(1000))
+				.andExpect(jsonPath("$.result.code").value(UserStatusCode.USER_CREATED))
 				.andReturn();
 	}
 
