@@ -1,6 +1,7 @@
-package son.kingofsettlement.common.exception;
+package son.kingofsettlement.user.exception;
 
 import lombok.Getter;
+import son.kingofsettlement.common.exception.ApiExceptionInterface;
 import son.kingofsettlement.common.statusCode.StatusCodeInterface;
 
 @Getter

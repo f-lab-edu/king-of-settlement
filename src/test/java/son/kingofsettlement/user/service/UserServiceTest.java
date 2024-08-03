@@ -8,7 +8,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
-import son.kingofsettlement.user.exception.SignUpException;
+import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.repository.UserRepository;
 
 import java.util.Optional;
@@ -63,6 +63,6 @@ class UserServiceTest {
 		//when
 		when(userRepository.findOneByEmail(AESEncryption.encrypt(user.getEmail()))).thenReturn(Optional.of(user));
 		//then
-		assertThrows(SignUpException.class, () -> userService.signUp(req));
+		assertThrows(UserException.class, () -> userService.signUp(req));
 	}
 }

@@ -12,9 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.SignUpRequest;
 import son.kingofsettlement.user.entity.User;
-import son.kingofsettlement.user.exception.SignUpException;
+import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.service.UserService;
 
 import java.util.HashMap;
@@ -91,7 +92,7 @@ class UserControllerTest {
 		User user = User.of("melody1@gmail.com", "aRs!@#!@33123df");
 		SignUpRequest req = new SignUpRequest(user.getEmail(), user.getPassword());
 		//when
-		doThrow(new SignUpException("중복된 이메일입니다.")).when(userService).signUp(any(SignUpRequest.class));
+		doThrow(new UserException(UserStatusCode.DUPLICATED_USER)).when(userService).signUp(any(SignUpRequest.class));
 		//then
 		mockMvc.perform(post("/users")
 						.contentType(MediaType.APPLICATION_JSON)
@@ -129,7 +130,7 @@ class UserControllerTest {
 
 		//when
 		jsonMap.put("email", email1);
-		doThrow(new SignUpException("중복된 이메일입니다.")).when(userService).signUp(any(SignUpRequest.class));
+		doThrow(new UserException(UserStatusCode.DUPLICATED_USER)).when(userService).signUp(any(SignUpRequest.class));
 		//then
 		MvcResult mvcResult = mockMvc.perform(
 						MockMvcRequestBuilders.post("/users")

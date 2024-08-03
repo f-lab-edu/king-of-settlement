@@ -16,11 +16,9 @@ import son.kingofsettlement.common.statusCode.CommonStatusCode;
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
-import son.kingofsettlement.user.exception.SignUpException;
-import son.kingofsettlement.user.exception.UserDoesNotExistException;
+import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.service.UserService;
 
-import javax.security.auth.login.LoginException;
 import java.util.Optional;
 
 // 해당 클래스가 RESTful 웹 서비스의 컨트롤러임을 나타내는 어노테이션으로, HTTP 요청과 응답을 처리하는 컨트롤러로 사용
@@ -45,13 +43,14 @@ public class UserController {
 		try {
 			if (bindingResult.hasFieldErrors()) {
 				Optional<FieldError> fieldError = Optional.ofNullable(bindingResult.getFieldError());
-				if (fieldError.isPresent()) throw new SignUpException(fieldError.get().getDefaultMessage());
-				return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.fail(CommonStatusCode.INVALID_REQUEST_PARAM, fieldError.get().getDefaultMessage()));
+				if (fieldError.isPresent()) {
+					throw new UserException(CommonStatusCode.INVALID_INPUT_VALUE, fieldError.get().getDefaultMessage());
+				}
 			}
 			userService.signUp(req);
 			return ResponseEntity.status(HttpStatus.CREATED).body(CommonResponse.success(UserStatusCode.USER_CREATED));
-		} catch (SignUpException e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(CommonResponse.fail(CommonStatusCode.COMMON_BAD_REQUEST, e.getMessage()));
+		} catch (Exception e) {
+			throw new UserException(CommonStatusCode.COMMON_BAD_REQUEST, e.getMessage());
 		}
 	}
 
@@ -60,17 +59,19 @@ public class UserController {
 		try {
 			if (bindingResult.hasFieldErrors()) {
 				Optional<FieldError> fieldError = Optional.ofNullable(bindingResult.getFieldError());
-				if (fieldError.isPresent()) throw new LoginException(fieldError.get().getDefaultMessage());
+				if (fieldError.isPresent()) {
+					throw new UserException(CommonStatusCode.INVALID_INPUT_VALUE, fieldError.get().getDefaultMessage());
+				}
 			}
 			return ResponseEntity.ok().body(CommonResponse.success(userService.login(request, req), UserStatusCode.LOGIN_SUCCESS));
-		} catch (LoginException | UserDoesNotExistException e) {
-			return ResponseEntity.badRequest().body(CommonResponse.fail(UserStatusCode.LOGIN_FAILED, e.getMessage()));
+		} catch (Exception e) {
+			throw new UserException(UserStatusCode.LOGIN_FAILED, e.getMessage());
 		}
 	}
 
 	@PostMapping("/logout")
 	public ResponseEntity<Object> logout(final HttpServletRequest request) {
 		userService.logout(request);
-		return ResponseEntity.status(HttpStatus.ACCEPTED).body(CommonResponse.success(CommonStatusCode.Succeed));
+		return ResponseEntity.status(HttpStatus.OK).body(CommonResponse.success(CommonStatusCode.Succeed));
 	}
 }
