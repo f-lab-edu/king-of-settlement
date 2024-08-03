@@ -1,4 +1,4 @@
-package son.kingofsettlement.common.error;
+package son.kingofsettlement.common.statusCode;
 
 
 public interface StatusCodeInterface {

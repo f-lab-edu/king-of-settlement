@@ -1,4 +1,4 @@
-package son.kingofsettlement.common.error;
+package son.kingofsettlement.common.statusCode;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

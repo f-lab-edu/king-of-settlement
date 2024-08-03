@@ -3,7 +3,7 @@ package son.kingofsettlement.common;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.ToString;
-import son.kingofsettlement.common.error.StatusCodeInterface;
+import son.kingofsettlement.common.statusCode.StatusCodeInterface;
 
 @Getter
 @ToString
