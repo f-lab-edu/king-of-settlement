@@ -89,4 +89,9 @@ public class User {
 		decryptEmail();
 		return email;
 	}
+
+	public void updateProfile(UserProfile profile) {
+		this.profile = profile;
+		this.updatedAt = LocalDateTime.now();
+	}
 }

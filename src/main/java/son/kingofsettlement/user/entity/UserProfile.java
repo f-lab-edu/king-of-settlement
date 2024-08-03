@@ -11,7 +11,20 @@ import lombok.ToString;
 // Lombok 라이브러리에서 제공되는 어노테이션으로, 클래스의 toString() 메서드를 자동으로 생성해주는 기능을 제공.
 @ToString
 public class UserProfile {
-    private String nickname;
-    private String profileUrl;
-    private String introduction;
+	private String nickname;
+	private String profileUrl;
+	private String introduction;
+
+	public UserProfile() {
+	}
+
+	public UserProfile(String nickname, String profileUrl, String introduction) {
+		this.nickname = nickname;
+		this.profileUrl = profileUrl;
+		this.introduction = introduction;
+	}
+
+	public static UserProfile of(String nickname, String profileUrl, String introduction) {
+		return new UserProfile(nickname, profileUrl, introduction);
+	}
 }

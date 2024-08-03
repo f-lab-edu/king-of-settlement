@@ -2,7 +2,9 @@ package son.kingofsettlement.user.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +17,8 @@ import son.kingofsettlement.common.statusCode.CommonStatusCode;
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
+import son.kingofsettlement.user.dto.UserUpdateRequest;
+import son.kingofsettlement.user.entity.User;
 import son.kingofsettlement.user.service.UserService;
 
 // 해당 클래스가 RESTful 웹 서비스의 컨트롤러임을 나타내는 어노테이션으로, HTTP 요청과 응답을 처리하는 컨트롤러로 사용
@@ -48,8 +52,15 @@ public class UserController {
 	}
 
 	@PostMapping("/logout")
-	public ResponseEntity<Object> logout(final HttpServletRequest request) {
+	public ResponseEntity<CommonResponse<?>> logout(final HttpServletRequest request) {
 		userService.logout(request);
 		return ResponseEntity.ok().body(CommonResponse.success(CommonStatusCode.Succeed));
+	}
+
+	@PutMapping("/{userId}")
+	public ResponseEntity<CommonResponse<?>> updateUser(@PathVariable(name = "userId") Long userId,
+		@RequestBody @Valid UserUpdateRequest req) {
+		User user = userService.updateProfile(userId, req);
+		return ResponseEntity.ok().body(CommonResponse.success(user.getProfile(), CommonStatusCode.Succeed));
 	}
 }

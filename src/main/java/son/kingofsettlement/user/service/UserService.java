@@ -1,14 +1,19 @@
 package son.kingofsettlement.user.service;
 
+import java.util.Optional;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import son.kingofsettlement.common.statusCode.UserStatusCode;
 import son.kingofsettlement.user.dto.LogInRequest;
 import son.kingofsettlement.user.dto.SignUpRequest;
+import son.kingofsettlement.user.dto.UserUpdateRequest;
 import son.kingofsettlement.user.entity.User;
+import son.kingofsettlement.user.entity.UserProfile;
 import son.kingofsettlement.user.exception.UserException;
 import son.kingofsettlement.user.repository.UserRepository;
 
@@ -39,7 +44,7 @@ public class UserService {
 		String password = req.getPassword();
 		String email = req.getEmail();
 		User existUser = userRepository.findOneByEmail(AESEncryption.encrypt(email))
-				.orElseThrow(() -> new UserException(UserStatusCode.USER_NOT_FOUND));
+			.orElseThrow(() -> new UserException(UserStatusCode.USER_NOT_FOUND));
 		HttpSession session = request.getSession();
 		session.setMaxInactiveInterval(1800);
 		session.setAttribute(SessionConst.LOGIN_MEMBER, existUser);
@@ -53,5 +58,16 @@ public class UserService {
 	public void logout(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		session.invalidate();
+	}
+
+	public User updateProfile(Long userId, UserUpdateRequest req) {
+		Optional<User> findUser = userRepository.findOneById(userId);
+		if (findUser.isEmpty()) {
+			throw new UserException(UserStatusCode.USER_NOT_FOUND);
+		}
+		User user = findUser.get();
+		UserProfile profile = UserProfile.of(req.getNickname(), req.getProfileUrl(), req.getIntroduction());
+		user.updateProfile(profile);
+		return userRepository.save(user);
 	}
 }
