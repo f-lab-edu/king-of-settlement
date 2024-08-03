@@ -2,6 +2,7 @@ package son.kingofsettlement.user.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -62,5 +63,10 @@ public class UserController {
 		@RequestBody @Valid UserUpdateRequest req) {
 		User user = userService.updateProfile(userId, req);
 		return ResponseEntity.ok().body(CommonResponse.success(user.getProfile(), CommonStatusCode.Succeed));
+	}
+
+	@DeleteMapping("/{userId}")
+	public ResponseEntity<CommonResponse<?>> deleteUser(@PathVariable(name = "userId") Long userId) {
+		return ResponseEntity.ok().body(CommonResponse.success(userService.delete(userId), CommonStatusCode.Succeed));
 	}
 }

@@ -55,6 +55,11 @@ public class User {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status")
 	private UserStatus activityStatus;
+
+	@Column(name = "is_deleted")
+	private Boolean isDeleted;
+	@Column(name = "deleted_at")
+	private LocalDateTime deletedAt;
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 	@Column(name = "updated_at")
@@ -68,6 +73,7 @@ public class User {
 		this.email = email;
 		this.password = password;
 		this.activityStatus = activityStatus;
+		this.isDeleted = false;
 		this.createdAt = createdAt;
 		this.updatedAt = updatedAt;
 	}
@@ -93,5 +99,11 @@ public class User {
 	public void updateProfile(UserProfile profile) {
 		this.profile = profile;
 		this.updatedAt = LocalDateTime.now();
+	}
+
+	public Long delete() {
+		this.isDeleted = true;
+		this.deletedAt = LocalDateTime.now();
+		return this.getId();
 	}
 }
