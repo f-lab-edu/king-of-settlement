@@ -33,13 +33,6 @@ public class CommonResponse<T> {
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T body;
 
-	public static <T> CommonResponse<T> success(T data, Result result) {
-		CommonResponse<T> commonResponse = new CommonResponse<>();
-		commonResponse.result = result;
-		commonResponse.body = data;
-		return commonResponse;
-	}
-
 	public static <T> CommonResponse<T> success(T data, StatusCodeInterface statusCodeInterface) {
 		CommonResponse<T> commonResponse = new CommonResponse<>();
 		commonResponse.result = Result.success(statusCodeInterface);
@@ -50,24 +43,6 @@ public class CommonResponse<T> {
 	public static CommonResponse<Object> success(StatusCodeInterface statusCodeInterface) {
 		CommonResponse<Object> commonResponse = new CommonResponse<>();
 		commonResponse.result = Result.success(statusCodeInterface);
-		return commonResponse;
-	}
-
-	public static CommonResponse<Object> success(StatusCodeInterface statusCodeInterface, String message) {
-		CommonResponse<Object> commonResponse = new CommonResponse<>();
-		commonResponse.result = Result.success(statusCodeInterface, message);
-		return commonResponse;
-	}
-
-	public static <T> CommonResponse<T> fail(T data, StatusCodeInterface statusCodeInterface) {
-		CommonResponse<T> commonResponse = new CommonResponse<>();
-		commonResponse.result = Result.fail(statusCodeInterface);
-		return commonResponse;
-	}
-
-	public static CommonResponse<Object> fail(StatusCodeInterface statusCodeInterface) {
-		CommonResponse<Object> commonResponse = new CommonResponse<>();
-		commonResponse.result = Result.fail(statusCodeInterface);
 		return commonResponse;
 	}
 
